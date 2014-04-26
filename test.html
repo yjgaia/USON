@@ -14,9 +14,21 @@
 		<script>
 			global = window;
 		</script>
+		<!--[if lt IE 9]>
+		<script src="JSON.js"></script>
+		<![endif]-->
 		<script src="UPPERCASE.JS"></script>
 		<script src="USON.js"></script>
 		<script>
+			// if not exists console.log.
+			if (global.console === undefined || console.log === undefined || console.log.apply === undefined) {
+				global.console = {
+					log : function(msg) {
+						alert(msg);
+					}
+				};
+			}
+
 			global.onload = function() {
 
 				// init all singleton classes.
