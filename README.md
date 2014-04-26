@@ -8,6 +8,8 @@ USON :: Universal types included JSON.
 - Date
 - function
 
+USON using UPPERCASE.JS (https://bitbucket.org/uppercaseio/uppercase.js)
+
 ##### Usage
     <script>
         global = window;
