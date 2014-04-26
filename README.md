@@ -12,9 +12,21 @@ USON :: Universal types included JSON.
     <script>
         global = window;
     </script>
+    <!--[if lt IE 9]>
+    <script src="JSON.js"></script>
+    <![endif]-->
     <script src="UPPERCASE.JS"></script>
     <script src="USON.js"></script>
     <script>
+        // if not exists console.log.
+        if (global.console === undefined || console.log === undefined || console.log.apply === undefined) {
+            global.console = {
+                log : function(msg) {
+                    alert(msg);
+                }
+            };
+        }
+
         global.onload = function() {
 
             // init all singleton classes.
@@ -40,6 +52,9 @@ USON :: Universal types included JSON.
             USON.parse(USON.stringify(data)).func();
         };
     </script>
+
+##### Updates
+- (2014. 4. 27) IE8 support.
 
 ##### License
 https://bitbucket.org/uppercaseio/uppercase.js/src/007c711583d32a9fcea26fd0ea5c3bf9b76dd2a6/LICENSE.md
