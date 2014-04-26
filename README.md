@@ -1,5 +1,6 @@
 # USON
 USON :: Universal types included JSON.
+
 - boolean
 - number
 - string
