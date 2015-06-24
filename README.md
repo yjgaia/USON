@@ -1,3 +1,5 @@
+*이 프로젝트는 EXTREME.JS(https://github.com/Hanul/EXTREME.JS)에 통합되었습니다.
+
 # USON
 USON :: Universal types included JSON.
 
