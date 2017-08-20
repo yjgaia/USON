@@ -9,50 +9,30 @@
 		<p>
 			USON :: Universal types included JSON.
 		</p>
-
-		<!-- JS WORLD -->
-		<script>
-			global = window;
-		</script>
-		<!--[if lt IE 9]>
-		<script src="JSON.js"></script>
-		<![endif]-->
-		<script src="UPPERCASE.JS"></script>
+		<script src="UPPERCASE-CORE/BROWSER.js"></script>
 		<script src="USON.js"></script>
 		<script>
-			// if not exists console.log.
-			if (global.console === undefined || console.log === undefined || console.log.apply === undefined) {
-				global.console = {
-					log : function(msg) {
-						alert(msg);
-					}
-				};
-			}
+		'use strict';
+		RUN(() => {
+			INIT_OBJECTS();
 
-			global.onload = function() {
-
-				// init all singleton classes.
-				OBJECT.init();
-
-				var
-				// data
-				data = {
-					msg : 'test',
-					date : new Date(),
-					func : function() {
-						console.log('ok!');
-					}
-				};
-
-				// where are date and func?
-				console.log(JSON.parse(JSON.stringify(data)));
-
-				// work correct.
-				console.log(USON.parse(USON.stringify(data)));
-
-				// ok!
-				USON.parse(USON.stringify(data)).func();
+			let data = {
+				msg : 'test',
+				date : new Date(),
+				func : () => {
+					console.log('ok!');
+				}
 			};
+
+			// where are date and func?
+			console.log(JSON.parse(JSON.stringify(data)));
+
+			// work correct.
+			console.log(USON.parse(USON.stringify(data)));
+
+			// ok!
+			USON.parse(USON.stringify(data)).func();
+		});
 		</script>
 	</body>
 </html>

@@ -1,1 +1,142 @@
-global.USON=USON=OBJECT({init:function(cls,inner,self){"use strict";var packData,unpackData,stringify,parse;packData=function(t){var a=COPY_DATA(t),n=[],_=[];return EACH(a,function(t,e){t instanceof Date==!0?(a[e]=INTEGER(t.getTime()),n.push(e)):"function"==typeof t?(a[e]=t.toString(),_.push(e)):CHECK_IS_DATA(t)===!0?a[e]=packData(t):CHECK_IS_ARRAY(t)===!0&&EACH(t,function(a,n){CHECK_IS_DATA(a)===!0&&(t[n]=packData(a))})}),a.__DATE_ATTR_NAMES=n,a.__FUNCTION_ATTR_NAMS=_,a},unpackData=function(data){var result=COPY_DATA(data);return void 0!==result.__DATE_ATTR_NAMES&&(EACH(result.__DATE_ATTR_NAMES,function(t){result[t]=new Date(result[t])}),delete result.__DATE_ATTR_NAMES),void 0!==result.__FUNCTION_ATTR_NAMS&&(EACH(result.__FUNCTION_ATTR_NAMS,function(functionAttrName,i){result[functionAttrName]=eval("false||"+result[functionAttrName])}),delete result.__FUNCTION_ATTR_NAMS),EACH(result,function(t,a){CHECK_IS_DATA(t)===!0?result[a]=unpackData(t):CHECK_IS_ARRAY(t)===!0&&EACH(t,function(a,n){CHECK_IS_DATA(a)===!0&&(t[n]=unpackData(a))})}),result},self.stringify=stringify=function(t){return JSON.stringify(packData(t))},self.parse=parse=function(t){return unpackData(JSON.parse(t))}}});
+/*
+ * USON
+ */
+global.USON = USON = OBJECT({
+
+	init : (inner, self) => {
+
+		let packData = (data) => {
+
+			let result = COPY(data);
+			
+			let dateNames = [];
+			let regexNames = [];
+			let functionNames = [];
+
+			EACH(result, (value, name) => {
+				
+				if (value instanceof Date === true) {
+	
+					// change to timestamp integer.
+					result[name] = INTEGER(value.getTime());
+					dateNames.push(name);
+				}
+				
+				else if (value instanceof RegExp === true) {
+	
+					// change to string.
+					result[name] = value.toString();
+					regexNames.push(name);
+				}
+				
+				else if (typeof value === 'function') {
+					result[name] = value.toString();
+					functionNames.push(name);
+				}
+				
+				else if (CHECK_IS_DATA(value) === true) {
+					result[name] = packData(value);
+				}
+				
+				else if (CHECK_IS_ARRAY(value) === true) {
+					
+					EACH(value, (v, i) => {
+						
+						if (CHECK_IS_DATA(v) === true) {
+							value[i] = packData(v);
+						}
+					});
+				}
+				
+				else {
+					// do nothing.
+				}
+			});
+
+			result.__D = dateNames;
+			result.__R = regexNames;
+			result.__F = functionNames;
+
+			return result;
+		};
+
+		let unpackData = (data) => {
+
+			let result = COPY(data);
+
+			// when date property names exists
+			if (result.__D !== undefined) {
+	
+				// change timestamp integer to Date type.
+				EACH(result.__D, (dateName, i) => {
+					result[dateName] = new Date(result[dateName]);
+				});
+				
+				delete result.__D;
+			}
+			
+			// when regex property names exists
+			if (result.__R !== undefined) {
+	
+				// change string to RegExp type.
+				EACH(result.__R, (regexName, i) => {
+					
+					let pattern = result[regexName];
+					let flags;
+					
+					for (let j = pattern.length - 1; j >= 0; j -= 1) {
+						if (pattern[j] === '/') {
+							flags = pattern.substring(j + 1);
+							pattern = pattern.substring(1, j);
+							break;
+						}
+					}
+					
+					result[regexName] = new RegExp(pattern, flags);
+				});
+				
+				delete result.__R;
+			}
+
+			if (result.__F !== undefined) {
+				
+				EACH(result.__F, (functionName, i) => {
+					result[functionName] = eval(result[functionName]);
+				});
+				
+				delete result.__F;
+			}
+
+			EACH(result, (value, name) => {
+				
+				if (CHECK_IS_DATA(value) === true) {
+					result[name] = unpackData(value);
+				}
+				
+				else if (CHECK_IS_ARRAY(value) === true) {
+					
+					EACH(value, (v, i) => {
+
+						if (CHECK_IS_DATA(v) === true) {
+							value[i] = unpackData(v);
+						}
+					});
+				}
+			});
+
+			return result;
+		};
+
+		let stringify = self.stringify = (data) => {
+			//REQUIRED: data
+
+			return JSON.stringify(packData(data));
+		};
+
+		let parse = self.parse = (str) => {
+			//REQUIRED: str
+
+			return unpackData(JSON.parse(str));
+		};
+	}
+});

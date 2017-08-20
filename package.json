@@ -1,0 +1,8 @@
+{
+	"name": "uson.js",
+	"version": "1.0.0",
+	"dependencies": {
+		"uppercase-core": "latest"
+	},
+	"main": "USON.js"
+}

@@ -1,5 +1,3 @@
-*이 프로젝트는 [EXTREME.JS](https://github.com/Hanul/EXTREME.JS)에 통합되었습니다.*
-
 # USON
 USON :: Universal types included JSON.
 
@@ -10,58 +8,39 @@ USON :: Universal types included JSON.
 - Date
 - function
 
-USON using UPPERCASE.JS (https://bitbucket.org/uppercaseio/uppercase.js)
+USON는 [UPPERCASE-CORE](https://github.com/Hanul/UPPERCASE/blob/master/DOC/GUIDE/UPPERCASE-CORE.md)를 기반으로 만들어졌습니다.
 
-##### Usage
-    <script>
-        global = window;
-    </script>
-    <!--[if lt IE 9]>
-    <script src="JSON.js"></script>
-    <![endif]-->
-    <script src="UPPERCASE.JS"></script>
-    <script src="USON.js"></script>
-    <script>
-        // if not exists console.log.
-        if (global.console === undefined || console.log === undefined || console.log.apply === undefined) {
-            global.console = {
-                log : function(msg) {
-                    alert(msg);
-                }
-            };
-        }
+## 사용 방법
+```html
+<script src="UPPERCASE-CORE/BROWSER.js"></script>
+<script src="USON.js"></script>
+<script>
+'use strict';
+RUN(() => {
+	INIT_OBJECTS();
 
-        global.onload = function() {
+	let data = {
+		msg : 'test',
+		date : new Date(),
+		func : () => {
+			console.log('ok!');
+		}
+	};
 
-            // init all singleton classes.
-            OBJECT.init();
+	// where are date and func?
+	console.log(JSON.parse(JSON.stringify(data)));
 
-            var
-            // data
-            data = {
-                msg : 'test',
-                date : new Date(),
-                func : function() {
-                    console.log('ok!');
-                }
-            };
+	// work correct.
+	console.log(USON.parse(USON.stringify(data)));
 
-            // where are date and func?
-            console.log(JSON.parse(JSON.stringify(data)));
+	// ok!
+	USON.parse(USON.stringify(data)).func();
+});
+</script>
+```
 
-            // work correct.
-            console.log(USON.parse(USON.stringify(data)));
+## 라이센스
+[MIT](LICENSE)
 
-            // ok!
-            USON.parse(USON.stringify(data)).func();
-        };
-    </script>
-
-##### Updates
-- (2014. 4. 27) IE8 support.
-
-##### License
-https://bitbucket.org/uppercaseio/uppercase.js/src/007c711583d32a9fcea26fd0ea5c3bf9b76dd2a6/LICENSE.md
-
-
-2014 ⓒ BTNcafe · http://www.btncafe.com · contact@btncafe.com
+## 작성자
+[Young Jae Sim](https://github.com/Hanul)
