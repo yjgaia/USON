@@ -1,12 +1,12 @@
 # USON
 USON :: Universal types included JSON.
 
-- boolean
-- number
-- string
-- array
-- Date
-- function
+* boolean
+* number
+* string
+* array
+* ***Date***
+* ***function***
 
 USON는 [UPPERCASE-CORE](https://github.com/Hanul/UPPERCASE/blob/master/DOC/GUIDE/UPPERCASE-CORE.md)를 기반으로 만들어졌습니다.
 
