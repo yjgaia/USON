@@ -11,6 +11,15 @@ USON :: Universal types included JSON.
 USON는 [UPPERCASE-CORE](https://github.com/Hanul/UPPERCASE/blob/master/DOC/GUIDE/UPPERCASE-CORE.md)를 기반으로 만들어졌습니다.
 
 ## 사용 방법
+### Node.js 환경
+```
+npm install -s uson.js
+```
+```javascript
+require('uson.js');
+```
+
+### 웹 브라우저 환경
 ```html
 <script src="UPPERCASE-CORE/BROWSER.js"></script>
 <script src="USON.js"></script>
