@@ -1,7 +1,7 @@
 /*
  * USON
  */
-global.USON = USON = OBJECT({
+global.USON = OBJECT({
 
 	init : (inner, self) => {
 
