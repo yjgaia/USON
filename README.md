@@ -7,6 +7,7 @@ USON :: Universal types included JSON.
 * array
 * ***Date***
 * ***function***
+* ***prototype***
 
 USON는 [UPPERCASE-CORE](https://github.com/Hanul/UPPERCASE/blob/master/DOC/GUIDE/UPPERCASE-CORE.md)를 기반으로 만들어졌습니다.
 

@@ -30,12 +30,19 @@ global.USON = USON = OBJECT({
 				}
 				
 				else if (typeof value === 'function') {
+					
 					result[name] = value.toString();
+					
+					if (value.prototype !== undefined) {
+						result[name + '__P'] = packData(value.prototype);
+					}
+					
 					functionNames.push(name);
 				}
 				
 				else if (CHECK_IS_DATA(value) === true) {
 					result[name] = packData(value);
+					result[name + '__P'] = packData(Object.getPrototypeOf(data[name]));
 				}
 				
 				else if (CHECK_IS_ARRAY(value) === true) {
@@ -101,7 +108,16 @@ global.USON = USON = OBJECT({
 			if (result.__F !== undefined) {
 				
 				EACH(result.__F, (functionName, i) => {
-					result[functionName] = eval(result[functionName]);
+					
+					if (result[functionName + '__P'] !== undefined) {
+						result[functionName] = eval('false||' + result[functionName]);
+						result[functionName].prototype = unpackData(result[functionName + '__P']);
+						delete result[functionName + '__P'];
+					}
+					
+					else {
+						result[functionName] = eval(result[functionName]);
+					}
 				});
 				
 				delete result.__F;
@@ -110,7 +126,15 @@ global.USON = USON = OBJECT({
 			EACH(result, (value, name) => {
 				
 				if (CHECK_IS_DATA(value) === true) {
+					
 					result[name] = unpackData(value);
+					
+					EXTEND({
+						origin : result[name],
+						extend : unpackData(result[name + '__P'])
+					});
+					
+					delete result[name + '__P'];
 				}
 				
 				else if (CHECK_IS_ARRAY(value) === true) {
