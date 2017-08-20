@@ -7,13 +7,13 @@ Welcome to UPPERCASE-CORE! (http://uppercase.io)
 */
 
 // 웹 브라우저 환경에서는 window가 global 객체 입니다.
-let global = window;
+const global = window;
 
 /*
  * 기본 설정
  */
 global.CONFIG = {
-	
+
 	// 개발 모드 설정
 	isDevMode : false
 };
@@ -25,10 +25,10 @@ global.METHOD = (define) => {
 	//REQUIRED: define		메소드 정의 구문
 	//REQUIRED: define.run	메소드 실행 구문
 
-	let funcs;
-	let run;
+    let funcs;
+    let run;
 
-	let m = (params, funcs) => {
+	const m = (params, funcs) => {
 		//OPTIONAL: params
 		//OPTIONAL: funcs
 
@@ -36,9 +36,9 @@ global.METHOD = (define) => {
 			return run(params, funcs);
 		}
 	};
-	
+
 	m.type = METHOD;
-	
+
 	if (typeof define === 'function') {
 		funcs = define(m);
 	}
@@ -70,9 +70,9 @@ global.TO_DELETE = null;
  */
 global.BOX = METHOD((m) => {
 
-	let boxes = {};
-	
-	let getAllBoxes = m.getAllBoxes = () => {
+	const boxes = {};
+
+	const getAllBoxes = m.getAllBoxes = () => {
 		return boxes;
 	};
 
@@ -81,11 +81,11 @@ global.BOX = METHOD((m) => {
 		run : (boxName) => {
 			//REQUIRED: boxName
 
-			let box = (packName) => {
+			const box = (packName) => {
 				//REQUIRED: packName
 
-				let packNameSps = packName.split('.');
-				
+				const packNameSps = packName.split('.');
+
 				let pack;
 
 				EACH(packNameSps, (packNameSp) => {
@@ -95,16 +95,16 @@ global.BOX = METHOD((m) => {
 						if (box[packNameSp] === undefined) {
 							box[packNameSp] = {};
 						}
-						
+
 						pack = box[packNameSp];
 					}
-					
+
 					else {
 
 						if (pack[packNameSp] === undefined) {
 							pack[packNameSp] = {};
 						}
-						
+
 						pack = pack[packNameSp];
 					}
 				});
@@ -116,7 +116,7 @@ global.BOX = METHOD((m) => {
 			box.boxName = boxName;
 
 			global[boxName] = boxes[boxName] = box;
-			
+
 			if (CONFIG[boxName] === undefined) {
 				CONFIG[boxName] = {};
 			}
@@ -133,9 +133,9 @@ global.BOX = METHOD((m) => {
  */
 global.FOR_BOX = METHOD((m) => {
 
-	let funcs = [];
-	
-	let inject = m.inject = (box) => {
+	const funcs = [];
+
+	const inject = m.inject = (box) => {
 		EACH(funcs, (func) => {
 			func(box);
 		});
@@ -162,11 +162,11 @@ global.SHOW_ERROR = (tag, errorMsg, params) => {
 	//REQUIRED: tag
 	//REQUIRED: errorMsg
 	//OPTIONAL: params
-	
-	let cal = CALENDAR();
-		
+
+	const cal = CALENDAR();
+
 	console.error(cal.getYear() + '-' + cal.getMonth(true) + '-' + cal.getDate(true) + ' ' + cal.getHour(true) + ':' + cal.getMinute(true) + ':' + cal.getSecond(true) + ' [' + tag + '] 오류가 발생했습니다. 오류 메시지: ' + errorMsg);
-	
+
 	if (params !== undefined) {
 		console.error('다음은 오류를 발생시킨 파라미터입니다.');
 		console.error(JSON.stringify(params, TO_DELETE, 4));
@@ -179,11 +179,11 @@ global.SHOW_WARNING = (tag, warningMsg, params) => {
 	//REQUIRED: tag
 	//REQUIRED: warningMsg
 	//OPTIONAL: params
-	
-	let cal = CALENDAR();
-	
+
+	const cal = CALENDAR();
+
 	console.warn(cal.getYear() + '-' + cal.getMonth(true) + '-' + cal.getDate(true) + ' ' + cal.getHour(true) + ':' + cal.getMinute(true) + ':' + cal.getSecond(true) + ' [' + tag + '] 경고가 발생했습니다. 경고 메시지: ' + warningMsg);
-	
+
 	if (params !== undefined) {
 		console.warn('다음은 경고를 발생시킨 파라미터입니다.');
 		console.warn(JSON.stringify(params, TO_DELETE, 4));
@@ -194,9 +194,9 @@ global.SHOW_WARNING = (tag, warningMsg, params) => {
  */
 global.CLASS = METHOD((m) => {
 
-	let instanceCount = 0;
+    let instanceCount = 0;
 
-	let getNextInstanceId = m.getNextInstanceId = () => {
+	const getNextInstanceId = m.getNextInstanceId = () => {
 
 		instanceCount += 1;
 
@@ -208,52 +208,52 @@ global.CLASS = METHOD((m) => {
 		run : (define) => {
 			//REQUIRED: define	클래스 정의 구문
 
-			let funcs;
-			
-			let preset;
-			let init;
-			let _params;
-			let afterInit;
-			
-			let cls = (params, funcs) => {
+            let funcs;
+
+            let preset;
+            let init;
+            let _params;
+            let afterInit;
+
+			const cls = (params, funcs) => {
 				//OPTIONAL: params
 				//OPTIONAL: funcs
 
 				// inner (protected)
-				let inner = {};
+				const inner = {};
 
 				// self (public)
-				let self = {
-					
+				const self = {
+
 					type : cls,
-					
+
 					id : getNextInstanceId(),
-					
+
 					checkIsInstanceOf : (checkCls) => {
-	
-						let targetCls = cls;
-	
+
+                        let targetCls = cls;
+
 						// check moms.
 						while (targetCls !== undefined) {
-	
+
 							if (targetCls === checkCls) {
 								return true;
 							}
-	
+
 							targetCls = targetCls.mom;
 						}
-	
+
 						return false;
 					}
 				};
-				
+
 				params = innerInit(inner, self, params, funcs);
 
 				innerAfterInit(inner, self, params, funcs);
 
 				return self;
 			};
-			
+
 			if ( typeof define === 'function') {
 				funcs = define(cls);
 			} else {
@@ -270,18 +270,18 @@ global.CLASS = METHOD((m) => {
 			cls.type = CLASS;
 			cls.id = getNextInstanceId();
 
-			let innerInit = cls.innerInit = (inner, self, params, funcs) => {
+			const innerInit = cls.innerInit = (inner, self, params, funcs) => {
 				//REQUIRED: inner
 				//REQUIRED: self
 				//OPTIONAL: params
 				//OPTIONAL: funcs
-				
-				// mom (parent class)
-				let mom;
-				
-				let paramValue;
 
-				let extend = (params, tempParams) => {
+				// mom (parent class)
+                let mom;
+
+                let paramValue;
+
+				const extend = (params, tempParams) => {
 
 					EACH(tempParams, (value, name) => {
 
@@ -299,16 +299,16 @@ global.CLASS = METHOD((m) => {
 					if (params === undefined) {
 						params = _params(cls);
 					}
-					
+
 					else if (CHECK_IS_DATA(params) === true) {
 
-						let tempParams = _params(cls);
+						const tempParams = _params(cls);
 
 						if (tempParams !== undefined) {
 							extend(params, tempParams);
 						}
 					}
-					
+
 					else {
 						paramValue = params;
 						params = _params(cls);
@@ -342,13 +342,13 @@ global.CLASS = METHOD((m) => {
 				return params;
 			};
 
-			let innerAfterInit = cls.innerAfterInit = (inner, self, params, funcs) => {
+			const innerAfterInit = cls.innerAfterInit = (inner, self, params, funcs) => {
 				//REQUIRED: inner
 				//REQUIRED: self
 				//OPTIONAL: params
 				//OPTIONAL: funcs
 
-				let mom = cls.mom;
+				const mom = cls.mom;
 
 				// when mom exists, run mom's after init.
 				if (mom !== undefined) {
@@ -390,15 +390,15 @@ global.INIT_OBJECTS = METHOD({
  */
 global.OBJECT = METHOD((m) => {
 
-	let readyObjects = [];
-	let isInited = false;
+	const readyObjects = [];
+    let isInited = false;
 
-	let initObject = (object) => {
+	const initObject = (object) => {
 		//REQUIRED: object	초기화 할 싱글톤 객체
 
-		let cls = object.type;
-		let inner = {};
-		let params = {};
+		const cls = object.type;
+		const inner = {};
+		const params = {};
 
 		// set id.
 		object.id = CLASS.getNextInstanceId();
@@ -407,7 +407,7 @@ global.OBJECT = METHOD((m) => {
 		cls.innerAfterInit(inner, object, params);
 	};
 
-	let addReadyObject = (object) => {
+	const addReadyObject = (object) => {
 		//REQUIRED: object	초기화를 대기시킬 싱글톤 객체
 
 		if (isInited === true) {
@@ -417,16 +417,16 @@ global.OBJECT = METHOD((m) => {
 		}
 	};
 
-	let removeReadyObject = m.removeReadyObject = (object) => {
+	const removeReadyObject = m.removeReadyObject = (object) => {
 		//REQUIRED: object	대기열에서 삭제할 싱글톤 객체
-		
+
 		REMOVE({
 			array : readyObjects,
 			value : object
 		});
 	};
 
-	let initObjects = m.initObjects = () => {
+	const initObjects = m.initObjects = () => {
 
 		// init all objects.
 		EACH(readyObjects, (object) => {
@@ -441,30 +441,30 @@ global.OBJECT = METHOD((m) => {
 		run : (define) => {
 			//REQUIRED: define	클래스 정의 구문
 
-			let cls = CLASS(define);
+			const cls = CLASS(define);
 
-			let self = {
-				
+			const self = {
+
 				type : cls,
-				
+
 				checkIsInstanceOf : (checkCls) => {
 
-					let targetCls = cls;
-	
+                    let targetCls = cls;
+
 					// check moms.
 					while (targetCls !== undefined) {
-	
+
 						if (targetCls === checkCls) {
 							return true;
 						}
-	
+
 						targetCls = targetCls.mom;
 					}
-	
+
 					return false;
 				}
 			};
-			
+
 			addReadyObject(self);
 
 			return self;
@@ -481,11 +481,11 @@ global.NEXT = METHOD({
 		//OPTIONAL: countOrArray
 		//REQUIRED: funcOrFuncs
 
-		let count;
-		let array;
-		
-		let f;
-		
+        let count;
+        let array;
+
+        let f;
+
 		if (funcOrFuncs === undefined) {
 			funcOrFuncs = countOrArray;
 			countOrArray = undefined;
@@ -498,20 +498,20 @@ global.NEXT = METHOD({
 				array = countOrArray;
 			}
 		}
-		
-		let funcs;
+
+        let funcs;
 		if (CHECK_IS_ARRAY(funcOrFuncs) !== true) {
 			funcs = [funcOrFuncs];
 		} else {
 			funcs = funcOrFuncs;
 		}
-		
+
 		REPEAT({
 			start : funcs.length - 1,
 			end : 0
 		}, (i) => {
 
-			let next;
+            let next;
 
 			// get last function.
 			if (i !== 0 && f === undefined) {
@@ -543,8 +543,8 @@ global.NEXT = METHOD({
 				f = funcs[i];
 
 				if (count !== undefined) {
-					
-					let i = -1;
+
+                    let i = -1;
 
 					RUN((self) => {
 
@@ -557,18 +557,18 @@ global.NEXT = METHOD({
 						}
 					});
 				}
-				
+
 				else if (array !== undefined) {
 
-					let length = array.length;
+                    let length = array.length;
 
 					if (length === 0) {
 						next();
 					}
-					
+
 					else {
-						
-						let i = -1;
+
+                        let i = -1;
 
 						RUN((self) => {
 
@@ -590,7 +590,7 @@ global.NEXT = METHOD({
 						});
 					}
 				}
-				
+
 				else {
 					f(next);
 				}
@@ -627,14 +627,14 @@ global.PARALLEL = METHOD({
 	run : (dataOrArrayOrCount, funcs) => {
 		//OPTIONAL: dataOrArrayOrCount
 		//REQUIRED: funcs
-		
-		let doneCount = 0;
+
+        let doneCount = 0;
 
 		// only funcs
 		if (funcs === undefined) {
 			funcs = dataOrArrayOrCount;
-			
-			let length = funcs.length - 1;
+
+			const length = funcs.length - 1;
 
 			EACH(funcs, (func, i) => {
 
@@ -651,14 +651,14 @@ global.PARALLEL = METHOD({
 				}
 			});
 		}
-		
+
 		else if (dataOrArrayOrCount === undefined) {
 			funcs[1]();
 		}
-		
+
 		else if (CHECK_IS_DATA(dataOrArrayOrCount) === true) {
-			
-			let propertyCount = COUNT_PROPERTIES(dataOrArrayOrCount);
+
+			const propertyCount = COUNT_PROPERTIES(dataOrArrayOrCount);
 
 			if (propertyCount === 0) {
 				funcs[1]();
@@ -677,9 +677,9 @@ global.PARALLEL = METHOD({
 				});
 			}
 		}
-		
+
 		else if (CHECK_IS_ARRAY(dataOrArrayOrCount) === true) {
-	
+
 			if (dataOrArrayOrCount.length === 0) {
 				funcs[1]();
 			} else {
@@ -697,10 +697,10 @@ global.PARALLEL = METHOD({
 				});
 			}
 		}
-		
+
 		// when dataOrArrayOrCount is count
 		else {
-	
+
 			if (dataOrArrayOrCount === 0) {
 				funcs[1]();
 			} else {
@@ -728,26 +728,26 @@ global.PARSE_STR = METHOD({
 
 	run : (dataStr) => {
 		//REQUIRED: dataStr
-		
+
 		try {
 
-			let data = JSON.parse(dataStr);
-			
+			const data = JSON.parse(dataStr);
+
 			if (CHECK_IS_DATA(data) === true) {
 				return UNPACK_DATA(data);
 			}
-			
+
 			else if (CHECK_IS_ARRAY(data) === true) {
-				
-				let array = [];
-				
+
+				const array = [];
+
 				EACH(data, (data) => {
 					array.push(UNPACK_DATA(data));
 				});
-				
+
 				return array;
 			}
-			
+
 			else {
 				return data;
 			}
@@ -764,24 +764,24 @@ global.PARSE_STR = METHOD({
  * 알파벳 대, 소문자와 숫자로 이루어진 임의의 문자열을 생성합니다.
  */
 global.RANDOM_STR = METHOD(() => {
-	
+
 	const CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-	
+
 	return {
-	
+
 		run : (length) => {
 			//REQUIRED: length
-	
-			let randomStr = '';
-	
+
+            let randomStr = '';
+
 			REPEAT(length, () => {
-	
+
 				// add random character to random string.
 				randomStr += CHARACTERS.charAt(RANDOM({
 					limit : CHARACTERS.length
 				}));
 			});
-	
+
 			return randomStr;
 		}
 	};
@@ -794,17 +794,17 @@ global.STRINGIFY = METHOD({
 
 	run : (data) => {
 		//REQUIRED: data
-		
+
 		if (CHECK_IS_DATA(data) === true) {
 			return JSON.stringify(PACK_DATA(data));
 		}
-		
+
 		else if (CHECK_IS_ARRAY(data) === true) {
-			
-			let f = (array) => {
-				
-				let newArray = [];
-				
+
+			const f = (array) => {
+
+				const newArray = [];
+
 				EACH(array, (data) => {
 					if (CHECK_IS_DATA(data) === true) {
 						newArray.push(PACK_DATA(data));
@@ -814,13 +814,13 @@ global.STRINGIFY = METHOD({
 						newArray.push(data);
 					}
 				});
-				
+
 				return newArray;
 			};
-			
+
 			return JSON.stringify(f(data));
 		}
-		
+
 		else {
 			return JSON.stringify(data);
 		}
@@ -829,12 +829,12 @@ global.STRINGIFY = METHOD({
 
 /*
  * 테스트용 메소드입니다.
- * 
+ *
  * 테스트에 성공하거나 실패하면 콘솔에 메시지를 출력합니다.
  */
 global.TEST = METHOD((m) => {
 
-	let errorCount = 0;
+    let errorCount = 0;
 
 	return {
 
@@ -845,9 +845,9 @@ global.TEST = METHOD((m) => {
 			test((bool) => {
 				//REQUIRED: bool
 
-				let temp = {};
-				let line;
-				
+				const temp = {};
+                let line;
+
 				if (bool === true) {
 					console.log(MSG({
 						ko : '[' + name + ' 테스트] 테스트를 통과하였습니다. 총 ' + errorCount + '개의 오류가 있습니다.'
@@ -883,7 +883,7 @@ global.TEST = METHOD((m) => {
 
 /*
  * URI가 주어진 포맷에 맞는지 확인하는 URI_MATCHER 클래스
- * 
+ *
  * 포맷에 파라미터 구간을 지정할 수 있어 URI로부터 파라미터 값을 가져올 수 있습니다.
  */
 global.URI_MATCHER = CLASS({
@@ -891,23 +891,23 @@ global.URI_MATCHER = CLASS({
 	init : (inner, self, format) => {
 		//REQUIRED: format
 
-		let Check = CLASS({
+		const Check = CLASS({
 
 			init : (inner, self, uri) => {
 				//REQUIRED: uri
 
-				let uriParts = uri.split('/');
-				
-				let isMatched;
-				let uriParams = {};
+				const uriParts = uri.split('/');
 
-				let find = (format) => {
+                let isMatched;
+				const uriParams = {};
 
-					let formatParts = format.split('/');
+				const find = (format) => {
+
+					const formatParts = format.split('/');
 
 					return EACH(uriParts, (uriPart, i) => {
 
-						let formatPart = formatParts[i];
+						const formatPart = formatParts[i];
 
 						if (formatPart === '**') {
 							isMatched = true;
@@ -940,17 +940,17 @@ global.URI_MATCHER = CLASS({
 					isMatched = find(format);
 				}
 
-				let checkIsMatched = self.checkIsMatched = () => {
+				const checkIsMatched = self.checkIsMatched = () => {
 					return isMatched;
 				};
 
-				let getURIParams = self.getURIParams = () => {
+				const getURIParams = self.getURIParams = () => {
 					return uriParams;
 				};
 			}
 		});
-		
-		let check = self.check = (uri) => {
+
+		const check = self.check = (uri) => {
 			return Check(uri);
 		};
 	}
@@ -960,8 +960,8 @@ global.URI_MATCHER = CLASS({
  * 데이터를 검증하고, 어떤 부분이 잘못되었는지 오류를 확인할 수 있는 VALID 클래스
  */
 global.VALID = CLASS((cls) => {
-	
-	let notEmpty = cls.notEmpty = (value) => {
+
+	const notEmpty = cls.notEmpty = (value) => {
 		//REQUIRED: value
 
 		let str = (value === undefined || value === TO_DELETE) ? '' : String(value);
@@ -969,29 +969,29 @@ global.VALID = CLASS((cls) => {
 		return CHECK_IS_ARRAY(value) === true || str.trim() !== '';
 	};
 
-	let regex = cls.regex = (params) => {
+	const regex = cls.regex = (params) => {
 		//REQUIRED: params
 		//REQUIRED: params.value
 		//REQUIRED: params.pattern
 
-		let str = String(params.value);
-		let pattern = params.pattern;
-		
-		let result = str.match(pattern);
+		const str = String(params.value);
+		const pattern = params.pattern;
+
+		const result = str.match(pattern);
 
 		return result !== TO_DELETE && str === result[0];
 	};
 
-	let size = cls.size = (params) => {
+	const size = cls.size = (params) => {
 		//REQUIRED: params
 		//REQUIRED: params.value
 		//OPTIONAL: params.min
 		//REQUIRED: params.max
-		
-		let str = String(params.value);
-		let min = params.min;
-		let max = params.max;
-		
+
+		const str = String(params.value);
+        let min = params.min;
+		const max = params.max;
+
 		if (min === undefined) {
 			min = 0;
 		}
@@ -999,99 +999,99 @@ global.VALID = CLASS((cls) => {
 		return min <= str.trim().length && (max === undefined || str.length <= max);
 	};
 
-	let integer = cls.integer = (value) => {
+	const integer = cls.integer = (value) => {
 		//REQUIRED: value
 
-		let str = String(value);
+		const str = String(value);
 
 		return notEmpty(str) === true && str.match(/^(?:-?(?:0|[1-9][0-9]*))$/) !== TO_DELETE;
 	};
 
-	let real = cls.real = (value) => {
+	const real = cls.real = (value) => {
 		//REQUIRED: value
-		
-		let str = String(value);
+
+		const str = String(value);
 
 		return notEmpty(str) === true && str.match(/^(?:-?(?:0|[1-9][0-9]*))?(?:\.[0-9]*)?$/) !== TO_DELETE;
 	};
 
-	let bool = cls.bool = (value) => {
+	const bool = cls.bool = (value) => {
 		//REQUIRED: value
-		
-		let str = String(value);
+
+		const str = String(value);
 
 		return str === 'true' || str === 'false';
 	};
 
-	let date = cls.date = (value) => {
+	const date = cls.date = (value) => {
 		//REQUIRED: value
 
-		let str = String(value);
-		let date = Date.parse(str);
+		const str = String(value);
+		const date = Date.parse(str);
 
 		return isNaN(date) === false;
 	};
 
-	let min = cls.min = (params) => {
+	const min = cls.min = (params) => {
 		//REQUIRED: params
 		//REQUIRED: params.value
 		//REQUIRED: params.min
-		
-		let value = params.value;
-		let min = params.min;
+
+		const value = params.value;
+		const min = params.min;
 
 		return real(value) === true && min <= value;
 	};
 
-	let max = cls.max = (params) => {
+	const max = cls.max = (params) => {
 		//REQUIRED: params
 		//REQUIRED: params.value
 		//REQUIRED: params.max
-		
-		let value = params.value;
-		let max = params.max;
+
+		const value = params.value;
+		const max = params.max;
 
 		return real(value) === true && max >= value;
 	};
 
-	let email = cls.email = (value) => {
+	const email = cls.email = (value) => {
 		//REQUIRED: value
 
 		return typeof value === 'string' && notEmpty(value) === true && value.match(/^(?:[\w\!\#\$\%\&\'\*\+\-\/\=\?\^\`\{\|\}\~]+\.)*[\w\!\#\$\%\&\'\*\+\-\/\=\?\^\`\{\|\}\~]+@(?:(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9\-](?!\.)){0,61}[a-zA-Z0-9]?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9\-](?!$)){0,61}[a-zA-Z0-9]?)|(?:\[(?:(?:[01]?\d{1,2}|2[0-4]\d|25[0-5])\.){3}(?:[01]?\d{1,2}|2[0-4]\d|25[0-5])\]))$/) !== TO_DELETE;
 	};
 
-	let png = cls.png = (value) => {
+	const png = cls.png = (value) => {
 		//REQUIRED: value
 
 		return typeof value === 'string' && notEmpty(value) === true && value.match(/^data:image\/png;base64,/) !== TO_DELETE;
 	};
 
-	let url = cls.url = (value) => {
+	const url = cls.url = (value) => {
 		//REQUIRED: value
 
 		return typeof value === 'string' && notEmpty(value) === true && value.match(/^(?:(?:ht|f)tp(?:s?)\:\/\/|~\/|\/)?(?:\w+:\w+@)?((?:(?:[-\w\d{1-3}]+\.)+(?:com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|edu|co\.uk|ac\.uk|it|fr|tv|museum|asia|local|travel|[a-z]{2}))|((\b25[0-5]\b|\b[2][0-4][0-9]\b|\b[0-1]?[0-9]?[0-9]\b)(\.(\b25[0-5]\b|\b[2][0-4][0-9]\b|\b[0-1]?[0-9]?[0-9]\b)){3}))(?::[\d]{1,5})?(?:(?:(?:\/(?:[-\w~!$+|.,=]|%[a-f\d]{2})+)+|\/)+|\?|#)?(?:(?:\?(?:[-\w~!$+|.,*:]|%[a-f\d{2}])+=?(?:[-\w~!$+|.,*:=]|%[a-f\d]{2})*)(?:&(?:[-\w~!$+|.,*:]|%[a-f\d{2}])+=?(?:[-\w~!$+|.,*:=]|%[a-f\d]{2})*)*)*(?:#(?:[-\w~!$ |\/.,*:;=]|%[a-f\d]{2})*)?$/i) !== TO_DELETE && value.length <= 2083;
 	};
 
-	let username = cls.username = (value) => {
+	const username = cls.username = (value) => {
 		//REQUIRED: value
 
 		return typeof value === 'string' && notEmpty(value) === true && value.match(/^[_a-zA-Z0-9\-]+$/) !== TO_DELETE;
 	};
 
 	// check is mongo id.
-	let mongoId = cls.mongoId = (value) => {
+	const mongoId = cls.mongoId = (value) => {
 		//REQUIRED: value
 
 		return typeof value === 'string' && notEmpty(value) === true && value.match(/[0-9a-f]{24}/) !== TO_DELETE && value.length === 24;
 	};
 
-	let one = cls.one = (params) => {
+	const one = cls.one = (params) => {
 		//REQUIRED: params
 		//REQUIRED: params.value
 		//REQUIRED: params.array
 
-		let value = params.value;
-		let array = params.array;
+		const value = params.value;
+		const array = params.array;
 
 		return EACH(array, (_value) => {
 			if (value === _value) {
@@ -1100,32 +1100,32 @@ global.VALID = CLASS((cls) => {
 		}) === false;
 	};
 
-	let array = cls.array = (value) => {
+	const array = cls.array = (value) => {
 		//REQUIRED: value
 
 		return CHECK_IS_ARRAY(value) === true;
 	};
 
-	let data = cls.data = (value) => {
+	const data = cls.data = (value) => {
 		//REQUIRED: value
 
 		return CHECK_IS_DATA(value) === true;
 	};
 
-	let element = cls.element = (params) => {
+	const element = cls.element = (params) => {
 		//REQUIRED: params
 		//REQUIRED: params.array
 		//REQUIRED: params.validData
 		//OPTIONAL: params.isToWash
-		
-		let array = params.array;
 
-		let valid = VALID({
+		const array = params.array;
+
+		const valid = VALID({
 			_ : params.validData
 		});
-		
-		let isToWash = params.isToWash;
-		
+
+		const isToWash = params.isToWash;
+
 		return EACH(array, (value) => {
 			if ((isToWash === true ? valid.checkAndWash : valid.check)({
 				_ : value
@@ -1135,20 +1135,20 @@ global.VALID = CLASS((cls) => {
 		}) === true;
 	};
 
-	let property = cls.property = (params) => {
+	const property = cls.property = (params) => {
 		//REQUIRED: params
 		//REQUIRED: params.data
 		//REQUIRED: params.validData
 		//OPTIONAL: params.isToWash
 
-		let data = params.data;
+		const data = params.data;
 
-		let valid = VALID({
+		const valid = VALID({
 			_ : params.validData
 		});
-		
-		let isToWash = params.isToWash;
-		
+
+		const isToWash = params.isToWash;
+
 		return EACH(data, (value) => {
 			if ((isToWash === true ? valid.checkAndWash : valid.check)({
 				_ : value
@@ -1158,26 +1158,26 @@ global.VALID = CLASS((cls) => {
 		}) === true;
 	};
 
-	let detail = cls.detail = (params) => {
+	const detail = cls.detail = (params) => {
 		//REQUIRED: params
 		//REQUIRED: params.data
 		//REQUIRED: params.validDataSet
 		//OPTIONAL: params.isToWash
-		
-		let data = params.data;
-		let valid = VALID(params.validDataSet);
-		let isToWash = params.isToWash;
-		
+
+		const data = params.data;
+		const valid = VALID(params.validDataSet);
+		const isToWash = params.isToWash;
+
 		return (isToWash === true ? valid.checkAndWash : valid.check)(data).checkHasError() !== true;
 	};
 
-	let equal = cls.equal = (params) => {
+	const equal = cls.equal = (params) => {
 		//REQUIRED: params
 		//REQUIRED: params.value
 		//REQUIRED: params.validValue
 
-		let str = String(params.value);
-		let validStr = String(params.validValue);
+		const str = String(params.value);
+		const validStr = String(params.validValue);
 
 		return str === validStr;
 	};
@@ -1187,7 +1187,7 @@ global.VALID = CLASS((cls) => {
 		init : (inner, self, validDataSet) => {
 			//REQUIRED: validDataSet
 
-			let Check = CLASS({
+			const Check = CLASS({
 
 				init : (inner, self, params) => {
 					//REQUIRED: params
@@ -1195,12 +1195,12 @@ global.VALID = CLASS((cls) => {
 					//OPTIONAL: params.isToWash
 					//OPTIONAL: params.isForUpdate
 
-					let data = params.data;
-					let isToWash = params.isToWash;
-					let isForUpdate = params.isForUpdate;
+					const data = params.data;
+					const isToWash = params.isToWash;
+					const isForUpdate = params.isForUpdate;
 
-					let hasError = false;
-					let errors = {};
+                    let hasError = false;
+					const errors = {};
 
 					EACH(validDataSet, (validData, attr) => {
 
@@ -1209,8 +1209,8 @@ global.VALID = CLASS((cls) => {
 
 							EACH(validData, (validParams, name) => {
 
-								let value = data[attr];
-								
+                                let value = data[attr];
+
 								if (isForUpdate === true && value === undefined) {
 
 									// break.
@@ -1218,9 +1218,9 @@ global.VALID = CLASS((cls) => {
 								}
 
 								if (isToWash === true && name !== 'notEmpty' && notEmpty(value) !== true) {
-									
+
 									data[attr] = isForUpdate === true ? TO_DELETE : undefined;
-									
+
 									// continue.
 									return true;
 								}
@@ -1429,9 +1429,9 @@ global.VALID = CLASS((cls) => {
 								}
 
 								if (typeof value === 'string') {
-									
+
 									value = value.trim();
-									
+
 									if (notEmpty(value) === true) {
 										if (name === 'integer') {
 											data[attr] = INTEGER(value);
@@ -1447,7 +1447,7 @@ global.VALID = CLASS((cls) => {
 											data[attr] = value;
 										}
 									}
-									
+
 									else {
 										data[attr] = value;
 									}
@@ -1457,7 +1457,7 @@ global.VALID = CLASS((cls) => {
 					});
 
 					if (isToWash === true) {
-						
+
 						EACH(data, (value, attr) => {
 							if (validDataSet[attr] === undefined) {
 								delete data[attr];
@@ -1465,38 +1465,38 @@ global.VALID = CLASS((cls) => {
 						});
 					}
 
-					let checkHasError = self.checkHasError = () => {
+					const checkHasError = self.checkHasError = () => {
 						return hasError;
 					};
 
-					let getErrors = self.getErrors = () => {
+					const getErrors = self.getErrors = () => {
 						return errors;
 					};
 				}
 			});
 
-			let check = self.check = (data) => {
+			const check = self.check = (data) => {
 				return Check({
 					data : data
 				});
 			};
 
-			let checkAndWash = self.checkAndWash = (data) => {
+			const checkAndWash = self.checkAndWash = (data) => {
 				return Check({
 					data : data,
 					isToWash : true
 				});
 			};
 
-			let checkForUpdate = self.checkForUpdate = (data) => {
+			const checkForUpdate = self.checkForUpdate = (data) => {
 				return Check({
 					data : data,
 					isToWash : true,
 					isForUpdate : true
 				});
 			};
-			
-			let getValidDataSet = self.getValidDataSet = () => {
+
+			const getValidDataSet = self.getValidDataSet = () => {
 				return validDataSet;
 			};
 		}
@@ -1513,13 +1513,13 @@ global.CHECK_ARE_SAME = METHOD({
 
 		let areSame = false;
 
-		let checkTwoSame = (a, b) => {
+		const checkTwoSame = (a, b) => {
 
 			// when a, b are date
 			if ( a instanceof Date === true && b instanceof Date === true) {
 				return a.getTime() === b.getTime();
 			}
-			
+
 			// when a, b are regex
 			else if ( a instanceof RegExp === true && b instanceof RegExp === true) {
 				return a.toString() === b.toString();
@@ -1622,12 +1622,12 @@ global.COUNT_PROPERTIES = METHOD({
 	run : (data) => {
 		//OPTIONAL: data
 
-		let count = 0;
-		
+        let count = 0;
+
 		EACH(data, () => {
 			count += 1;
 		});
-		
+
 		return count;
 	}
 });
@@ -1640,9 +1640,9 @@ global.PACK_DATA = METHOD({
 	run : (data) => {
 		//REQUIRED: data
 
-		let result = COPY(data);
-		let dateNames = [];
-		let regexNames = [];
+		const result = COPY(data);
+		const dateNames = [];
+		const regexNames = [];
 
 		EACH(result, (value, name) => {
 
@@ -1652,7 +1652,7 @@ global.PACK_DATA = METHOD({
 				result[name] = INTEGER(value.getTime());
 				dateNames.push(name);
 			}
-			
+
 			else if (value instanceof RegExp === true) {
 
 				// change to string.
@@ -1690,7 +1690,7 @@ global.UNPACK_DATA = METHOD({
 	run : (packedData) => {
 		//REQUIRED: packedData	PACK_DATA가 적용된 데이터
 
-		let result = COPY(packedData);
+		const result = COPY(packedData);
 
 		// when date property names exists
 		if (result.__D !== undefined) {
@@ -1699,19 +1699,19 @@ global.UNPACK_DATA = METHOD({
 			EACH(result.__D, (dateName, i) => {
 				result[dateName] = new Date(result[dateName]);
 			});
-			
+
 			delete result.__D;
 		}
-		
+
 		// when regex property names exists
 		if (result.__R !== undefined) {
 
 			// change string to RegExp type.
 			EACH(result.__R, (regexName, i) => {
-				
-				let pattern = result[regexName];
-				let flags;
-				
+
+                let pattern = result[regexName];
+                let flags;
+
 				for (let j = pattern.length - 1; j >= 0; j -= 1) {
 					if (pattern[j] === '/') {
 						flags = pattern.substring(j + 1);
@@ -1719,10 +1719,10 @@ global.UNPACK_DATA = METHOD({
 						break;
 					}
 				}
-				
+
 				result[regexName] = new RegExp(pattern, flags);
 			});
-			
+
 			delete result.__R;
 		}
 
@@ -1758,9 +1758,9 @@ global.CHECK_IS_IN = METHOD({
 		//OPTIONAL: params.array
 		//REQUIRED: params.value	존재하는지 확인 할 값
 
-		let data = params.data;
-		let array = params.array;
-		let value = params.value;
+		const data = params.data;
+		const array = params.array;
+		const value = params.value;
 
 		if (data !== undefined) {
 			return EACH(data, (_value, name) => {
@@ -1788,11 +1788,11 @@ global.COMBINE = METHOD({
 	run : (dataSetOrArrays) => {
 		//REQUIRED: dataSetOrArrays
 
-		let result;
+        let result;
 
 		if (dataSetOrArrays.length > 0) {
 
-			let first = dataSetOrArrays[0];
+			const first = dataSetOrArrays[0];
 
 			if (CHECK_IS_DATA(first) === true) {
 
@@ -1830,9 +1830,9 @@ global.COPY = METHOD({
 
 	run : (dataOrArray) => {
 		//REQUIRED: dataOrArray
-		
-		let copy;
-		
+
+        let copy;
+
 		if (CHECK_IS_DATA(dataOrArray) === true) {
 
 			copy = {};
@@ -1867,22 +1867,22 @@ global.EXTEND = METHOD({
 		//REQUIRED: params.origin	기존 데이터나 배열
 		//REQUIRED: params.extend	덧붙힐 데이터나 배열
 
-		let origin = params.origin;
-		let extend = params.extend;
+		const origin = params.origin;
+		const extend = params.extend;
 
 		if (CHECK_IS_DATA(origin) === true) {
 
 			EACH(extend, (value, name) => {
-				
+
 				if ( value instanceof Date === true) {
 					origin[name] = new Date(value.getTime());
 				}
-				
+
 				else if ( value instanceof RegExp === true) {
-					
-					let pattern = value.toString();
-					let flags;
-					
+
+                    let pattern = value.toString();
+                    let flags;
+
 					for (let i = pattern.length - 1; i >= 0; i -= 1) {
 						if (pattern[i] === '/') {
 							flags = pattern.substring(i + 1);
@@ -1890,14 +1890,14 @@ global.EXTEND = METHOD({
 							break;
 						}
 					}
-					
+
 					origin[name] = new RegExp(pattern, flags);
 				}
-				
+
 				else if (CHECK_IS_DATA(value) === true || CHECK_IS_ARRAY(value) === true) {
 					origin[name] = COPY(value);
 				}
-				
+
 				else {
 					origin[name] = value;
 				}
@@ -1911,12 +1911,12 @@ global.EXTEND = METHOD({
 				if ( value instanceof Date === true) {
 					origin.push(new Date(value.getTime()));
 				}
-				
+
 				else if ( value instanceof RegExp === true) {
-					
-					let pattern = value.toString();
-					let flags;
-					
+
+                    let pattern = value.toString();
+                    let flags;
+
 					for (let i = pattern.length - 1; i >= 0; i -= 1) {
 						if (pattern[i] === '/') {
 							flags = pattern.substring(i + 1);
@@ -1924,14 +1924,14 @@ global.EXTEND = METHOD({
 							break;
 						}
 					}
-					
+
 					origin.push(new RegExp(pattern, flags));
 				}
-				
+
 				else if (CHECK_IS_DATA(value) === true || CHECK_IS_ARRAY(value) === true) {
 					origin.push(COPY(value));
 				}
-				
+
 				else {
 					origin.push(value);
 				}
@@ -1954,7 +1954,7 @@ global.FIND = METHOD({
 		//REQUIRED: dataOrArrayOrParams.value	찾을 값
 		//OPTIONAL: filter
 
-		let ret;
+        let ret;
 
 		if (filter !== undefined) {
 
@@ -1986,9 +1986,9 @@ global.FIND = METHOD({
 		else {
 
 			// init params.
-			let data = dataOrArrayOrParams.data;
-			let array = dataOrArrayOrParams.array;
-			let value = dataOrArrayOrParams.value;
+			const data = dataOrArrayOrParams.data;
+			const array = dataOrArrayOrParams.array;
+			const value = dataOrArrayOrParams.value;
 
 			if (data !== undefined) {
 
@@ -2028,7 +2028,7 @@ global.REMOVE = METHOD({
 		//OPTIONAL: dataOrArrayOrParams.key		배열에서 삭제할 값의 키 (index)
 		//OPTIONAL: dataOrArrayOrParams.value	삭제할 값, 이 값을 찾아 삭제합니다.
 		//OPTIONAL: filter
-		
+
 		if (filter !== undefined) {
 
 			if (CHECK_IS_DATA(dataOrArrayOrParams) === true) {
@@ -2065,11 +2065,11 @@ global.REMOVE = METHOD({
 		else {
 
 			// init params.
-			let data = dataOrArrayOrParams.data;
-			let array = dataOrArrayOrParams.array;
-			let name = dataOrArrayOrParams.name;
-			let key = dataOrArrayOrParams.key;
-			let value = dataOrArrayOrParams.value;
+			const data = dataOrArrayOrParams.data;
+			const array = dataOrArrayOrParams.array;
+			const name = dataOrArrayOrParams.name;
+			const key = dataOrArrayOrParams.key;
+			const value = dataOrArrayOrParams.value;
 
 			if (name !== undefined) {
 				delete data[name];
@@ -2125,15 +2125,15 @@ global.CALENDAR = CLASS({
 			date = new Date();
 		}
 
-		let getYear = self.getYear = () => {
+		const getYear = self.getYear = () => {
 			return date.getFullYear();
 		};
 
-		let getMonth = self.getMonth = (isFormal) => {
+		const getMonth = self.getMonth = (isFormal) => {
 			//OPTIONAL: isFormal	true로 설정하면 10보다 작은 수일 경우 앞에 0을 붙힌 문자열을 반환합니다. ex) 01, 04, 09
-			
-			let month = date.getMonth() + 1;
-			
+
+			const month = date.getMonth() + 1;
+
 			if (isFormal === true) {
 				return month < 10 ? '0' + month : '' + month;
 			} else {
@@ -2141,11 +2141,11 @@ global.CALENDAR = CLASS({
 			}
 		};
 
-		let getDate = self.getDate = (isFormal) => {
+		const getDate = self.getDate = (isFormal) => {
 			//OPTIONAL: isFormal	true로 설정하면 10보다 작은 수일 경우 앞에 0을 붙힌 문자열을 반환합니다. ex) 01, 04, 09
-			
-			let d = date.getDate();
-			
+
+			const d = date.getDate();
+
 			if (isFormal === true) {
 				return d < 10 ? '0' + d : '' + d;
 			} else {
@@ -2153,15 +2153,15 @@ global.CALENDAR = CLASS({
 			}
 		};
 
-		let getDay = self.getDay = () => {
+		const getDay = self.getDay = () => {
 			return date.getDay();
 		};
 
-		let getHour = self.getHour = (isFormal) => {
+		const getHour = self.getHour = (isFormal) => {
 			//OPTIONAL: isFormal	true로 설정하면 10보다 작은 수일 경우 앞에 0을 붙힌 문자열을 반환합니다. ex) 01, 04, 09
-			
-			let hour = date.getHours();
-			
+
+			const hour = date.getHours();
+
 			if (isFormal === true) {
 				return hour < 10 ? '0' + hour : '' + hour;
 			} else {
@@ -2169,11 +2169,11 @@ global.CALENDAR = CLASS({
 			}
 		};
 
-		let getMinute = self.getMinute = (isFormal) => {
+		const getMinute = self.getMinute = (isFormal) => {
 			//OPTIONAL: isFormal	true로 설정하면 10보다 작은 수일 경우 앞에 0을 붙힌 문자열을 반환합니다. ex) 01, 04, 09
-			
-			let minute = date.getMinutes();
-			
+
+			const minute = date.getMinutes();
+
 			if (isFormal === true) {
 				return minute < 10 ? '0' + minute : '' + minute;
 			} else {
@@ -2181,11 +2181,11 @@ global.CALENDAR = CLASS({
 			}
 		};
 
-		let getSecond = self.getSecond = (isFormal) => {
+		const getSecond = self.getSecond = (isFormal) => {
 			//OPTIONAL: isFormal	true로 설정하면 10보다 작은 수일 경우 앞에 0을 붙힌 문자열을 반환합니다. ex) 01, 04, 09
-			
-			let second = date.getSeconds();
-			
+
+			const second = date.getSeconds();
+
 			if (isFormal === true) {
 				return second < 10 ? '0' + second : '' + second;
 			} else {
@@ -2208,36 +2208,36 @@ global.CREATE_DATE = METHOD({
 		//OPTIONAL: params.hour		시
 		//OPTIONAL: params.minute	분
 		//OPTIONAL: params.second	초
-		
-		let year = params.year;
-		let month = params.month;
-		let date = params.date;
-		let hour = params.hour;
-		let minute = params.minute;
-		let second = params.second;
-		
-		let nowCal = CALENDAR(new Date());
-		
+
+        let year = params.year;
+        let month = params.month;
+        let date = params.date;
+        let hour = params.hour;
+        let minute = params.minute;
+        let second = params.second;
+
+		const nowCal = CALENDAR(new Date());
+
 		if (year === undefined) {
 			year = nowCal.getYear();
 		}
-		
+
 		if (month === undefined) {
 			month = date === undefined ? 0 : nowCal.getMonth();
 		}
-		
+
 		if (date === undefined) {
 			date = hour === undefined ? 0 : nowCal.getDate();
 		}
-		
+
 		if (hour === undefined) {
 			hour = minute === undefined ? 0 : nowCal.getHour();
 		}
-		
+
 		if (minute === undefined) {
 			minute = second === undefined ? 0 : nowCal.getMinute();
 		}
-		
+
 		if (second === undefined) {
 			second = 0;
 		}
@@ -2259,34 +2259,34 @@ global.DELAY = CLASS({
 			func = seconds;
 			seconds = 0;
 		}
-		
-		let milliseconds;
-		
-		let startTime = Date.now();
-		
-		let remaining = milliseconds = seconds * 1000;
-		
-		let timeout;
-		
-		let resume = self.resume = RAR(() => {
-			
+
+        let milliseconds;
+
+		const startTime = Date.now();
+
+        let remaining = milliseconds = seconds * 1000;
+
+        let timeout;
+
+		const resume = self.resume = RAR(() => {
+
 			if (timeout === undefined) {
-				
+
 				timeout = setTimeout(() => {
 					func();
 				}, remaining);
 			}
 		});
-		
-		let pause = self.pause = () => {
-			
+
+		const pause = self.pause = () => {
+
 			remaining = milliseconds - (Date.now() - startTime);
-			
+
 			clearTimeout(timeout);
 			timeout = undefined;
 		};
-		
-		let remove = self.remove = () => {
+
+		const remove = self.remove = () => {
 			pause();
 		};
 	}
@@ -2306,43 +2306,43 @@ global.INTERVAL = CLASS({
 			seconds = 0;
 		}
 
-		let milliseconds;
-		
-		let startTime = Date.now();
-		
-		let remaining = milliseconds = seconds === 0 ? 1 : seconds * 1000;
-		
-		let interval;
-		
-		let count = 0;
-		
-		let resume = self.resume = RAR(() => {
-			
+        let milliseconds;
+
+        let startTime = Date.now();
+
+        let remaining = milliseconds = seconds === 0 ? 1 : seconds * 1000;
+
+        let interval;
+
+        let count = 0;
+
+		const resume = self.resume = RAR(() => {
+
 			if (interval === undefined) {
-				
+
 				interval = setInterval(() => {
-					
+
 					count += 1;
-					
+
 					if (func(self, count) === false) {
 						remove();
 					}
-					
+
 					startTime = Date.now();
-					
+
 				}, remaining);
 			}
 		});
-		
-		let pause = self.pause = () => {
-			
+
+		const pause = self.pause = () => {
+
 			remaining = milliseconds - (Date.now() - startTime);
-			
+
 			clearInterval(interval);
 			interval = undefined;
 		};
-		
-		let remove = self.remove = () => {
+
+		const remove = self.remove = () => {
 			pause();
 		};
 	}
@@ -2352,27 +2352,27 @@ global.INTERVAL = CLASS({
  * 아주 짧은 시간동안 반복해서 실행하는 로직을 작성할때 사용하는 LOOP 클래스
  */
 global.LOOP = CLASS((cls) => {
-	
-	let animationInterval;
-	let loopInfos = [];
-	let runs = [];
 
-	let fire = () => {
+    let animationInterval;
+	const loopInfos = [];
+	const runs = [];
+
+	const fire = () => {
 
 		if (animationInterval === undefined) {
 
-			let beforeTime = Date.now() / 1000;
+            let beforeTime = Date.now() / 1000;
 
 			animationInterval = INTERVAL(() => {
 
-				let time = Date.now() / 1000;
-				let deltaTime = time - beforeTime;
-				
+				const time = Date.now() / 1000;
+				const deltaTime = time - beforeTime;
+
 				if (deltaTime > 0) {
 
 					for (let i = 0; i < loopInfos.length; i += 1) {
 
-						let loopInfo = loopInfos[i];
+						const loopInfo = loopInfos[i];
 
 						if (loopInfo.fps !== undefined && loopInfo.fps > 0) {
 
@@ -2382,7 +2382,7 @@ global.LOOP = CLASS((cls) => {
 							}
 
 							// calculate count.
-							let count = parseInt(loopInfo.fps * deltaTime * (loopInfo.timeSigma / deltaTime + 1), 10) - loopInfo.countSigma;
+							const count = parseInt(loopInfo.fps * deltaTime * (loopInfo.timeSigma / deltaTime + 1), 10) - loopInfo.countSigma;
 
 							// start.
 							if (loopInfo.start !== undefined) {
@@ -2390,8 +2390,8 @@ global.LOOP = CLASS((cls) => {
 							}
 
 							// run interval.
-							let interval = loopInfo.interval;
-							for (j = 0; j < count; j += 1) {
+							const interval = loopInfo.interval;
+							for (let j = 0; j < count; j += 1) {
 								interval(loopInfo.fps);
 							}
 
@@ -2419,8 +2419,8 @@ global.LOOP = CLASS((cls) => {
 			});
 		}
 	};
-	
-	let stop = () => {
+
+	const stop = () => {
 
 		if (loopInfos.length <= 0 && runs.length <= 0) {
 
@@ -2438,12 +2438,12 @@ global.LOOP = CLASS((cls) => {
 			//REQUIRED: intervalOrFuncs.interval
 			//OPTIONAL: intervalOrFuncs.end
 
-			let run;
-			let start;
-			let interval;
-			let end;
+            let run;
+            let start;
+            let interval;
+            let end;
 
-			let info;
+            let info;
 
 			if (intervalOrFuncs !== undefined) {
 
@@ -2455,20 +2455,20 @@ global.LOOP = CLASS((cls) => {
 					interval = intervalOrFuncs.interval;
 					end = intervalOrFuncs.end;
 				}
-			
-				let resume = self.resume = RAR(() => {
-					
+
+				const resume = self.resume = RAR(() => {
+
 					loopInfos.push( info = {
 						fps : fpsOrRun,
 						start : start,
 						interval : interval,
 						end : end
 					});
-					
+
 					fire();
 				});
 
-				let pause = self.pause = () => {
+				const pause = self.pause = () => {
 
 					REMOVE({
 						array : loopInfos,
@@ -2478,28 +2478,28 @@ global.LOOP = CLASS((cls) => {
 					stop();
 				};
 
-				let changeFPS = self.changeFPS = (fps) => {
+				const changeFPS = self.changeFPS = (fps) => {
 					//REQUIRED: fps
 
 					info.fps = fps;
 				};
 
-				let remove = self.remove = () => {
+				const remove = self.remove = () => {
 					pause();
 				};
 			}
 
 			// when fpsOrRun is run
 			else {
-				
-				let resume = self.resume = RAR(() => {
-					
+
+				const resume = self.resume = RAR(() => {
+
 					runs.push(run = fpsOrRun);
-					
+
 					fire();
 				});
 
-				let pause = self.pause = () => {
+				const pause = self.pause = () => {
 
 					REMOVE({
 						array : runs,
@@ -2509,7 +2509,7 @@ global.LOOP = CLASS((cls) => {
 					stop();
 				};
 
-				let remove = self.remove = () => {
+				const remove = self.remove = () => {
 					pause();
 				};
 			}
@@ -2519,7 +2519,7 @@ global.LOOP = CLASS((cls) => {
 
 /*
  * 주어진 함수를 즉시 실행하고, 함수를 반환합니다.
- * 
+ *
  * 선언과 동시에 실행되어야 하는 함수를 선언할 때 유용합니다.
  */
 global.RAR = METHOD({
@@ -2547,8 +2547,8 @@ global.RUN = METHOD({
 
 	run : (func) => {
 		//REQUIRED: func
-		
-		let f = () => {
+
+		const f = () => {
 			return func(f);
 		};
 
@@ -2579,9 +2579,9 @@ global.RANDOM = METHOD({
 		//OPTIONAL: limitOrParams.max	생성할 정수 범위 최대값, 이 값 이하인 값만 생성합니다.
 		//OPTIONAL: limitOrParams.limit	생성할 정수 범위 제한값, 이 값 미만인 값만 생성합니다.
 
-		let min;
-		let max
-		let limit;
+        let min;
+        let max
+        let limit;
 
 		// init limitOrParams.
 		if (CHECK_IS_DATA(limitOrParams) !== true) {
@@ -2624,14 +2624,14 @@ global.EACH = METHOD({
 	run : (dataOrArrayOrString, func) => {
 		//OPTIONAL: dataOrArrayOrString
 		//REQUIRED: func
-		
+
 		if (dataOrArrayOrString === undefined) {
 			return false;
 		}
 
 		else if (CHECK_IS_DATA(dataOrArrayOrString) === true) {
 
-			for (let name in dataOrArrayOrString) {
+			for (const name in dataOrArrayOrString) {
 				if (dataOrArrayOrString.hasOwnProperty === undefined || dataOrArrayOrString.hasOwnProperty(name) === true) {
 					if (func(dataOrArrayOrString[name], name) === false) {
 						return false;
@@ -2653,7 +2653,7 @@ global.EACH = METHOD({
 		// when dataOrArrayOrString is array or string
 		else {
 
-			let length = dataOrArrayOrString.length;
+            let length = dataOrArrayOrString.length;
 
 			for (let i = 0; i < length; i += 1) {
 
@@ -2691,12 +2691,12 @@ global.REPEAT = METHOD({
 		//OPTIONAL: countOrParams.step
 		//REQUIRED: func
 
-		let count;
-		let start;
-		let end;
-		let limit;
-		let step;
-		
+        let count;
+        let start;
+        let end;
+        let limit;
+        let step;
+
 		if (func === undefined) {
 			func = countOrParams;
 			countOrParams = undefined;
@@ -2751,10 +2751,10 @@ global.REPEAT = METHOD({
 				}
 			}
 		}
-		
+
 		// func mode
 		else {
-			
+
 			return (countOrParams) => {
 				return REPEAT(countOrParams, func);
 			};
@@ -2772,7 +2772,7 @@ global.REVERSE_EACH = METHOD({
 	run : (arrayOrString, func) => {
 		//OPTIONAL: arrayOrString
 		//REQUIRED: func
-		
+
 		if (arrayOrString === undefined) {
 			return false;
 		}
@@ -2791,14 +2791,14 @@ global.REVERSE_EACH = METHOD({
 		// when arrayOrString is array or string
 		else {
 
-			let length = arrayOrString.length;
+			const length = arrayOrString.length;
 
 			for (let i = length - 1; i >= 0; i -= 1) {
 
 				if (func(arrayOrString[i], i) === false) {
 					return false;
 				}
-				
+
 				// when shrink
 				if (arrayOrString.length < length) {
 					i += length - arrayOrString.length;
@@ -2824,16 +2824,16 @@ global.ADD_FONT = METHOD({
 		//OPTIONAL: params.woff
 		//OPTIONAL: params.otf
 		//OPTIONAL: params.ttf
-		
-		let name = params.name;
-		let style = params.style;
-		let weight = params.weight;
-		let woff2 = params.woff2;
-		let woff = params.woff;
-		let otf = params.otf;
-		let ttf = params.ttf;
-		
-		let src = '';
+
+		const name = params.name;
+		const style = params.style;
+		const weight = params.weight;
+		const woff2 = params.woff2;
+		const woff = params.woff;
+		const otf = params.otf;
+		const ttf = params.ttf;
+
+        let src = '';
 		if (woff2 !== undefined) {
 			src += 'url(' + woff2 + ') format(\'woff2\'),';
 		}
@@ -2846,22 +2846,22 @@ global.ADD_FONT = METHOD({
 		if (ttf !== undefined) {
 			src += 'url(' + ttf + ') format(\'truetype\'),';
 		}
-		
-		let content = '@font-face {';
+
+        let content = '@font-face {';
 		content += 'font-family:' + name + ';';
-		
+
 		if (style !== undefined) {
 			content += 'font-style:' + style + ';';
 		}
 		if (weight !== undefined) {
 			content += 'font-weight:' + weight + ';';
 		}
-		
+
 		content += 'src:' + src.substring(0, src.length - 1) + ';';
 		content += '}';
-		
+
 		// create font style element.
-		let fontStyleEl = document.createElement('style');
+		const fontStyleEl = document.createElement('style');
 		fontStyleEl.type = 'text/css';
 		fontStyleEl.appendChild(document.createTextNode(content));
 		document.getElementsByTagName('head')[0].appendChild(fontStyleEl);
@@ -2869,23 +2869,23 @@ global.ADD_FONT = METHOD({
 });
 
 OVERRIDE(BOX, (origin) => {
-	
+
 	/*
 	 * BOX를 생성합니다.
 	 */
 	global.BOX = METHOD((m) => {
-		
+
 		m.getAllBoxes = origin.getAllBoxes;
-		
+
 		return {
-			
+
 			run : (boxName) => {
 				//REQUIRED: boxName
-				
+
 				if (BROWSER_CONFIG[boxName] === undefined) {
 					BROWSER_CONFIG[boxName] = {};
 				}
-				
+
 				return origin(boxName);
 			}
 		};
@@ -2896,11 +2896,11 @@ OVERRIDE(BOX, (origin) => {
  * 웹 브라우저 환경에서의 기본 설정
  */
 global.BROWSER_CONFIG = {
-	
+
 	isSecure : location.protocol === 'https:',
-	
+
 	host : location.hostname,
-	
+
 	port : location.port === '' ? (location.protocol === 'https:' ? 443 : 80) : INTEGER(location.port)
 };
 
@@ -2918,21 +2918,21 @@ global.CONNECT_TO_WEB_SOCKET_SERVER = METHOD({
 		//REQUIRED: connectionListenerOrListeners.success
 		//OPTIONAL: connectionListenerOrListeners.error
 
-		let isSecure;
-		let host;
-		let port;
+        let isSecure;
+        let host;
+        let port;
 
-		let connectionListener;
-		let errorListener;
-		
-		let isConnected;
+        let connectionListener;
+        let errorListener;
 
-		let methodMap = {};
-		let sendKey = 0;
-		
-		let on;
-		let off;
-		let send;
+        let isConnected;
+
+		const methodMap = {};
+        let sendKey = 0;
+
+        let on;
+        let off;
+        let send;
 
 		if (CHECK_IS_DATA(portOrParams) !== true) {
 			port = portOrParams;
@@ -2941,11 +2941,11 @@ global.CONNECT_TO_WEB_SOCKET_SERVER = METHOD({
 			host = portOrParams.host;
 			port = portOrParams.port;
 		}
-		
+
 		if (isSecure === undefined) {
 			isSecure = BROWSER_CONFIG.isSecure;
 		}
-		
+
 		if (host === undefined) {
 			host = BROWSER_CONFIG.host;
 		}
@@ -2957,9 +2957,9 @@ global.CONNECT_TO_WEB_SOCKET_SERVER = METHOD({
 			errorListener = connectionListenerOrListeners.error;
 		}
 
-		let runMethods = (methodName, data, sendKey) => {
+		const runMethods = (methodName, data, sendKey) => {
 
-			let methods = methodMap[methodName];
+			const methods = methodMap[methodName];
 
 			if (methods !== undefined) {
 
@@ -2983,7 +2983,7 @@ global.CONNECT_TO_WEB_SOCKET_SERVER = METHOD({
 			}
 		};
 
-		let conn = new WebSocket((isSecure === true ? 'wss://': 'ws://') + host + ':' + port);
+        let conn = new WebSocket((isSecure === true ? 'wss://': 'ws://') + host + ':' + port);
 
 		conn.onopen = () => {
 
@@ -2996,7 +2996,7 @@ global.CONNECT_TO_WEB_SOCKET_SERVER = METHOD({
 				//REQUIRED: methodName
 				//REQUIRED: method
 
-				let methods = methodMap[methodName];
+                let methods = methodMap[methodName];
 
 				if (methods === undefined) {
 					methods = methodMap[methodName] = [];
@@ -3010,7 +3010,7 @@ global.CONNECT_TO_WEB_SOCKET_SERVER = METHOD({
 				//REQUIRED: methodName
 				//OPTIONAL: method
 
-				let methods = methodMap[methodName];
+				const methods = methodMap[methodName];
 
 				if (methods !== undefined) {
 
@@ -3033,41 +3033,41 @@ global.CONNECT_TO_WEB_SOCKET_SERVER = METHOD({
 				//REQUIRED: methodNameOrParams.methodName
 				//OPTIONAL: methodNameOrParams.data
 				//OPTIONAL: callback
-				
-				let methodName;
-				let data;
-				let callbackName;
-				
+
+                let methodName;
+                let data;
+                let callbackName;
+
 				if (CHECK_IS_DATA(methodNameOrParams) !== true) {
 					methodName = methodNameOrParams;
 				} else {
 					methodName = methodNameOrParams.methodName;
 					data = methodNameOrParams.data;
 				}
-				
+
 				if (conn !== undefined) {
-					
+
 					conn.send(STRINGIFY({
 						methodName : methodName,
 						data : data,
 						sendKey : sendKey
 					}));
-	
+
 					if (callback !== undefined) {
-						
+
 						callbackName = '__CALLBACK_' + sendKey;
-	
+
 						// on callback.
 						on(callbackName, (data) => {
-	
+
 							// run callback.
 							callback(data);
-	
+
 							// off callback.
 							off(callbackName);
 						});
 					}
-	
+
 					sendKey += 1;
 				}
 			},
@@ -3084,7 +3084,7 @@ global.CONNECT_TO_WEB_SOCKET_SERVER = METHOD({
 		// receive data.
 		conn.onmessage = (e) => {
 
-			let params = PARSE_STR(e.data);
+			const params = PARSE_STR(e.data);
 
 			if (params !== undefined) {
 				runMethods(params.methodName, params.data, params.sendKey);
@@ -3099,7 +3099,7 @@ global.CONNECT_TO_WEB_SOCKET_SERVER = METHOD({
 		// when error
 		conn.onerror = (error) => {
 
-			let errorMsg = error.toString();
+			const errorMsg = error.toString();
 
 			if (isConnected !== true) {
 
@@ -3118,7 +3118,7 @@ global.CONNECT_TO_WEB_SOCKET_SERVER = METHOD({
 
 /*
  * 쿠키 저장소 클래스
- * 
+ *
  * 쿠키에 데이터를 저장할 수 있는 클래스 입니다.
  * domain 파라미터를 통해 쿠키를 불러 올 수 있는 도메인 범위를 지정할 수 있습니다.
  * 웹 브라우저가 종료되어도 저장된 값들이 보존됩니다.
@@ -3130,9 +3130,9 @@ global.COOKIE_STORE = CLASS({
 		//REQUIRED: storeNameOrParams.storeName
 		//OPTIONAL: storeNameOrParams.domain
 
-		let storeName;
-		let domain;
-		
+        let storeName;
+        let domain;
+
 		if (CHECK_IS_DATA(storeNameOrParams) !== true) {
 			storeName = storeNameOrParams;
 		} else {
@@ -3140,24 +3140,24 @@ global.COOKIE_STORE = CLASS({
 			domain = storeNameOrParams.domain;
 		}
 
-		let genFullName = inner.genFullName = (name) => {
+		const genFullName = inner.genFullName = (name) => {
 			//REQUIRED: name
 
 			return storeName + '.' + name;
 		};
 
-		let save = self.save = (params) => {
+		const save = self.save = (params) => {
 			//REQUIRED: params
 			//REQUIRED: params.name
 			//REQUIRED: params.value
 			//OPTIONAL: params.isToSession
 
-			let name = params.name;
-			let value = params.value;
-			let isToSession = params.isToSession;
+			const name = params.name;
+			const value = params.value;
+			const isToSession = params.isToSession;
 
-			let expireTime;
-			
+            let expireTime;
+
 			if (isToSession === true) {
 				expireTime = 0;
 			} else {
@@ -3169,81 +3169,81 @@ global.COOKIE_STORE = CLASS({
 			document.cookie = genFullName(name) + '=' + encodeURIComponent(JSON.stringify(value)) + '; expires=' + (expireTime === 0 ? expireTime : expireTime.toGMTString()) + '; path=/;' + (domain === undefined ? '' : ' domain=' + domain + ';');
 		};
 
-		let get = self.get = (name) => {
+		const get = self.get = (name) => {
 			//REQUIRED: name
 
 			name = genFullName(name) + '=';
 
-			let cookie = document.cookie;
-			let i = cookie.indexOf(name);
+			const cookie = document.cookie;
+			const i = cookie.indexOf(name);
 
-			let pop;
+            let pop;
 			if (cookie && i >= 0) {
-				let temp = cookie.substring(i, cookie.length);
-				let d = temp.indexOf(';');
+				const temp = cookie.substring(i, cookie.length);
+				const d = temp.indexOf(';');
 				if (d > 0) {
 					pop = temp.substring(name.length, d);
 				} else {
 					pop = temp.substring(name.length);
 				}
 			}
-			
+
 			return pop === undefined ? undefined : JSON.parse(decodeURIComponent(pop));
 		};
-		
-		let remove = self.remove = (name) => {
+
+		const remove = self.remove = (name) => {
 			//REQUIRED: name
 
-			let expireTime = new Date();
+			const expireTime = new Date();
 			expireTime.setDate(expireTime.getDate() - 1);
-			
+
 			document.cookie = genFullName(name) + '=; expires=' + expireTime.toGMTString() + '; path=/;' + (domain === undefined ? '' : ' domain=' + domain + ';');
 		};
-		
-		let all = self.all = () => {
-			
-			let all = {};
-			
+
+		const all = self.all = () => {
+
+			const all = {};
+
 			EACH(document.cookie.split(';'), (str) => {
-				
-				let index = str.indexOf('=');
-				let fullName = str.substring(0, index);
-				
+
+				const index = str.indexOf('=');
+				const fullName = str.substring(0, index);
+
 				if (fullName.indexOf(storeName + '.') === 0) {
-					
+
 					all[fullName.substring(storeName.length + 1)] = str.substring(index + 1);
 				}
 			});
-			
+
 			return all;
 		};
 
-		let count = self.count = () => {
-			
-			let count = 0;
-			
+		const count = self.count = () => {
+
+            let count = 0;
+
 			EACH(document.cookie.split(';'), (str) => {
-				
-				let index = str.indexOf('=');
-				let fullName = str.substring(0, index);
-				
+
+				const index = str.indexOf('=');
+				const fullName = str.substring(0, index);
+
 				if (fullName.indexOf(storeName + '.') === 0) {
 					count += 1;
 				}
 			});
-			
+
 			return count;
 		};
 
-		let clear = self.clear = () => {
-			
+		const clear = self.clear = () => {
+
 			EACH(document.cookie.split(';'), (str) => {
-				
-				let index = str.indexOf('=');
-				let fullName = str.substring(0, index);
-				
+
+				const index = str.indexOf('=');
+				const fullName = str.substring(0, index);
+
 				if (fullName.indexOf(storeName + '.') === 0) {
-					
+
 					remove(fullName.substring(storeName.length + 1));
 				}
 			});
@@ -3260,32 +3260,32 @@ FOR_BOX((box) => {
 			//REQUIRED: storeNameOrParams.storeName
 			//OPTIONAL: storeNameOrParams.domain
 
-			let storeName;
-			let domain;
-			
+            let storeName;
+            let domain;
+
 			if (CHECK_IS_DATA(storeNameOrParams) !== true) {
 				storeName = storeNameOrParams;
 			} else {
 				storeName = storeNameOrParams.storeName;
 				domain = storeNameOrParams.domain;
 			}
-			
-			let store = COOKIE_STORE({
+
+			const store = COOKIE_STORE({
 				storeName : box.boxName + '.' + storeName,
 				domain : domain
 			});
 
-			let save = self.save = store.save;
-			
-			let get = self.get = store.get;
-			
-			let remove = self.remove = store.remove;
-			
-			let all = self.all = store.all;
-			
-			let count = self.count = store.count;
-			
-			let clear = self.clear = store.clear;
+			const save = self.save = store.save;
+
+			const get = self.get = store.get;
+
+			const remove = self.remove = store.remove;
+
+			const all = self.all = store.all;
+
+			const count = self.count = store.count;
+
+			const clear = self.clear = store.clear;
 		}
 	});
 });
@@ -3296,12 +3296,12 @@ global.INFO = OBJECT({
 
 	init : (inner, self) => {
 
-		let isTouchMode = global.ontouchstart !== undefined;
-		let isTouching;
+        let isTouchMode = global.ontouchstart !== undefined;
+        let isTouching;
 
-		let getLang = self.getLang = () => {
+		const getLang = self.getLang = () => {
 
-			let lang = STORE('__INFO').get('lang');
+            let lang = STORE('__INFO').get('lang');
 
 			if (lang === undefined) {
 				lang = navigator.language.toLowerCase();
@@ -3310,7 +3310,7 @@ global.INFO = OBJECT({
 			return lang;
 		};
 
-		let changeLang = self.changeLang = (lang) => {
+		const changeLang = self.changeLang = (lang) => {
 			//REQUIRED: lang
 
 			STORE('__INFO').save({
@@ -3321,29 +3321,29 @@ global.INFO = OBJECT({
 			location.reload();
 		};
 
-		let checkIsTouchMode = self.checkIsTouchMode = () => {
+		const checkIsTouchMode = self.checkIsTouchMode = () => {
 			return isTouchMode;
 		};
 
-		let getBrowserInfo = self.getBrowserInfo = () => {
+		const getBrowserInfo = self.getBrowserInfo = () => {
 			// using bowser. (https://github.com/ded/bowser)
 			return {
 				name : bowser.name,
 				version : REAL(bowser.version)
 			};
 		};
-		
+
 		EVENT_LOW('mousemove', () => {
 			if (isTouching !== true) {
 				isTouchMode = false;
 			}
 		});
-		
+
 		EVENT_LOW('touchstart', () => {
 			isTouchMode = true;
 			isTouching = true;
 		});
-		
+
 		EVENT_LOW('touchend', () => {
 			DELAY(() => {
 				isTouching = false;
@@ -3353,116 +3353,116 @@ global.INFO = OBJECT({
 });
 
 OVERRIDE(LOOP, (origin) => {
-	
+
 	/*
 	 * 아주 짧은 시간동안 반복해서 실행하는 로직을 작성할때 사용하는 LOOP 클래스
 	 */
 	global.LOOP = CLASS((cls) => {
-		
-		let beforeTime;
-		let animationInterval;
-		
-		let loopInfos = [];
-		let runs = [];
-		
-		let fire = () => {
-			
+
+        let beforeTime;
+        let animationInterval;
+
+		const loopInfos = [];
+		const runs = [];
+
+		const fire = () => {
+
 			if (animationInterval === undefined) {
-				
-				let step;
-	
+
+                let step;
+
 				beforeTime = performance.now() / 1000;
-				
+
 				animationInterval = requestAnimationFrame(step = (now) => {
-					
-					let time = now / 1000;
-					let deltaTime = time - beforeTime;
-					
+
+					const time = now / 1000;
+					const deltaTime = time - beforeTime;
+
 					if (deltaTime > 0) {
-						
+
 						for (let i = 0; i < loopInfos.length; i += 1) {
-							
-							let loopInfo = loopInfos[i];
-							
+
+							const loopInfo = loopInfos[i];
+
 							if (loopInfo.fps !== undefined && loopInfo.fps > 0) {
-	
+
 								if (loopInfo.timeSigma === undefined) {
 									loopInfo.timeSigma = 0;
 									loopInfo.countSigma = 0;
 								}
-	
+
 								// calculate count.
-								let count = parseInt(loopInfo.fps * deltaTime * (loopInfo.timeSigma / deltaTime + 1), 10) - loopInfo.countSigma;
-	
+								const count = parseInt(loopInfo.fps * deltaTime * (loopInfo.timeSigma / deltaTime + 1), 10) - loopInfo.countSigma;
+
 								// start.
 								if (loopInfo.start !== undefined) {
 									loopInfo.start();
 								}
-	
+
 								// run interval.
-								let interval = loopInfo.interval;
-								
+								const interval = loopInfo.interval;
+
 								for (let j = 0; j < count; j += 1) {
 									interval(loopInfo.fps);
 								}
-	
+
 								// end.
 								if (loopInfo.end !== undefined) {
 									loopInfo.end(deltaTime);
 								}
-	
+
 								loopInfo.countSigma += count;
-	
+
 								loopInfo.timeSigma += deltaTime;
 								if (loopInfo.timeSigma > 1000) {
 									loopInfo.timeSigma = undefined;
 								}
 							}
 						}
-	
+
 						// run runs.
 						for (let i = 0; i < runs.length; i += 1) {
 							runs[i](deltaTime);
 						}
-	
+
 						beforeTime = time;
 					}
-					
+
 					animationInterval = requestAnimationFrame(step);
 				});
 			}
 		};
-		
-		let stop = () => {
-			
+
+		const stop = () => {
+
 			if (loopInfos.length <= 0 && runs.length <= 0) {
-	
+
 				cancelAnimationFrame(animationInterval);
 				animationInterval = undefined;
 			}
 		};
-	
+
 		return {
-			
+
 			init : (inner, self, fpsOrRun, intervalOrFuncs) => {
 				//OPTIONAL: fpsOrRun
 				//OPTIONAL: intervalOrFuncs
 				//OPTIONAL: intervalOrFuncs.start
 				//REQUIRED: intervalOrFuncs.interval
 				//OPTIONAL: intervalOrFuncs.end
-				
-				let resume;
-				let pause;
-				let changeFPS;
-				let remove;
-	
+
+                let resume;
+                let pause;
+                let changeFPS;
+                let remove;
+
 				if (intervalOrFuncs !== undefined) {
-					
-					let start;
-					let interval;
-					let end;
-					let info;
-					
+
+                    let start;
+                    let interval;
+                    let end;
+                    let info;
+
 					// init intervalOrFuncs.
 					if (CHECK_IS_DATA(intervalOrFuncs) !== true) {
 						interval = intervalOrFuncs;
@@ -3471,62 +3471,62 @@ OVERRIDE(LOOP, (origin) => {
 						interval = intervalOrFuncs.interval;
 						end = intervalOrFuncs.end;
 					}
-				
+
 					resume = self.resume = RAR(() => {
-						
+
 						loopInfos.push(info = {
 							fps : fpsOrRun,
 							start : start,
 							interval : interval,
 							end : end
 						});
-						
+
 						fire();
 					});
-	
+
 					pause = self.pause = () => {
-	
+
 						REMOVE({
 							array : loopInfos,
 							value : info
 						});
-	
+
 						stop();
 					};
-	
+
 					changeFPS = self.changeFPS = (fps) => {
 						//REQUIRED: fps
-	
+
 						info.fps = fps;
 					};
-	
+
 					remove = self.remove = () => {
 						pause();
 					};
 				}
-	
+
 				// when fpsOrRun is run
 				else {
-					
-					let run;
-					
+
+                    let run;
+
 					resume = self.resume = RAR(() => {
-						
+
 						runs.push(run = fpsOrRun);
-						
+
 						fire();
 					});
-	
+
 					pause = self.pause = () => {
-	
+
 						REMOVE({
 							array : runs,
 							value : run
 						});
-	
+
 						stop();
 					};
-	
+
 					remove = self.remove = () => {
 						pause();
 					};
@@ -3538,7 +3538,7 @@ OVERRIDE(LOOP, (origin) => {
 
 /*
  * INFO의 웹 애플리케이션 언어 설정 코드에 해당하는 문자열을 반환합니다.
- * 
+ *
  * 만약 알 수 없는 언어 설정 코드라면, 첫 문자열을 반환합니다.
  */
 global.MSG = METHOD({
@@ -3546,14 +3546,14 @@ global.MSG = METHOD({
 	run : (msgs) => {
 		//REQUIRED: msgs
 
-		let msg = msgs[INFO.getLang()];
+        let msg = msgs[INFO.getLang()];
 
 		if (msg === undefined) {
-			
+
 			msg = msgs[INFO.getLang().substring(0, 2)];
-			
+
 			if (msg === undefined) {
-				
+
 				// get first msg.
 				EACH(msgs, (_msg) => {
 					msg = _msg;
@@ -3571,7 +3571,7 @@ global.MSG = METHOD({
  */
 global.SOUND = CLASS((cls) => {
 
-	let audioContext;
+    let audioContext;
 
 	return {
 
@@ -3582,30 +3582,30 @@ global.SOUND = CLASS((cls) => {
 			//OPTIONAL: params.isLoop
 			//OPTIONAL: params.gain
 
-			let ogg = params.ogg;
-			let mp3 = params.mp3;
-			let isLoop = params.isLoop;
-			let gain = params.gain;
-			
+			const ogg = params.ogg;
+			const mp3 = params.mp3;
+			const isLoop = params.isLoop;
+            let gain = params.gain;
+
 			if (gain === undefined) {
 				gain = 0.5;
 			}
-			
-			let buffer;
-			let source;
-			let gainNode;
-			
-			let startedAt = 0;
-			let pausedAt = 0;
-			
-			let delayed;
-			
+
+            let buffer;
+            let source;
+            let gainNode;
+
+            let startedAt = 0;
+            let pausedAt = 0;
+
+            let delayed;
+
 			// init audioContext.
 			if (audioContext === undefined) {
 				audioContext = new AudioContext();
 			}
-			
-			let request = new XMLHttpRequest();
+
+			const request = new XMLHttpRequest();
 			request.open('GET', new Audio().canPlayType('audio/ogg') !== '' ? ogg : mp3, true);
 			request.responseType = 'arraybuffer';
 
@@ -3616,7 +3616,7 @@ global.SOUND = CLASS((cls) => {
 					gainNode = audioContext.createGain();
 
 					buffer = _buffer;
-					
+
 					gainNode.connect(audioContext.destination);
 					gainNode.gain.value = gain;
 
@@ -3627,7 +3627,7 @@ global.SOUND = CLASS((cls) => {
 			};
 			request.send();
 
-			let play = self.play = () => {
+			const play = self.play = () => {
 
 				delayed = () => {
 
@@ -3635,10 +3635,10 @@ global.SOUND = CLASS((cls) => {
 					source.buffer = buffer;
 					source.connect(gainNode);
 					source.loop = isLoop;
-					
+
 					startedAt = Date.now() - pausedAt;
 					source.start(0, pausedAt / 1000);
-					
+
 					delayed = undefined;
 				};
 
@@ -3648,26 +3648,26 @@ global.SOUND = CLASS((cls) => {
 
 				return self;
 			};
-			
-			let pause = self.pause = () => {
+
+			const pause = self.pause = () => {
 				if (source !== undefined) {
 					source.stop(0);
 					pausedAt = Date.now() - startedAt;
 				}
 			};
 
-			let stop = self.stop = () => {
+			const stop = self.stop = () => {
 				if (source !== undefined) {
 					source.stop(0);
 					pausedAt = 0;
-					
+
 					source = undefined;
 				}
 			};
-			
-			let setGain = self.setGain = (_gain) => {
+
+			const setGain = self.setGain = (_gain) => {
 				gain = _gain;
-				
+
 				if (gainNode !== undefined) {
 					gainNode.gain.value = gain;
 				}
@@ -3698,36 +3698,36 @@ global.SOUND_ONCE = CLASS({
 
 /*
  * 저장소 클래스
- * 
+ *
  * 웹 브라우저가 종료되어도 저장된 값들이 보존됩니다.
  */
 global.STORE = CLASS({
 
 	init : (inner, self, storeName) => {
 		//REQUIRED: storeName
-		
+
 		// gen full name.
-		let genFullName = (name) => {
+		const genFullName = (name) => {
 			//REQUIRED: name
 
 			return storeName + '.' + name;
 		};
 
-		let save = self.save = (params) => {
+		const save = self.save = (params) => {
 			//REQUIRED: params
 			//REQUIRED: params.name
 			//REQUIRED: params.value
 
-			let name = params.name;
-			let value = params.value;
+			const name = params.name;
+			const value = params.value;
 
 			localStorage.setItem(genFullName(name), STRINGIFY(value));
 		};
 
-		let get = self.get = (name) => {
+		const get = self.get = (name) => {
 			//REQUIRED: name
 
-			let value = PARSE_STR(localStorage.getItem(genFullName(name)));
+            let value = PARSE_STR(localStorage.getItem(genFullName(name)));
 
 			if (value === TO_DELETE) {
 				value = undefined;
@@ -3736,47 +3736,47 @@ global.STORE = CLASS({
 			return value;
 		};
 
-		let remove = self.remove = (name) => {
+		const remove = self.remove = (name) => {
 			//REQUIRED: name
-			
+
 			localStorage.removeItem(genFullName(name));
 		};
 
-		let all = self.all = () => {
-			
-			let all = {};
-			
+		const all = self.all = () => {
+
+			const all = {};
+
 			EACH(localStorage, (value, fullName) => {
-				
+
 				if (fullName.indexOf(storeName + '.') === 0) {
-					
+
 					all[fullName.substring(storeName.length + 1)] = PARSE_STR(value);
 				}
 			});
-			
+
 			return all;
 		};
 
-		let count = self.count = () => {
-			
-			let count = 0;
-			
+		const count = self.count = () => {
+
+            let count = 0;
+
 			EACH(localStorage, (value, fullName) => {
-				
+
 				if (fullName.indexOf(storeName + '.') === 0) {
 					count += 1;
 				}
 			});
-			
+
 			return count;
 		};
 
-		let clear = self.clear = () => {
-			
+		const clear = self.clear = () => {
+
 			EACH(localStorage, (value, fullName) => {
-				
+
 				if (fullName.indexOf(storeName + '.') === 0) {
-					
+
 					remove(fullName.substring(storeName.length + 1));
 				}
 			});
@@ -3791,19 +3791,19 @@ FOR_BOX((box) => {
 		init : (inner, self, storeName) => {
 			//REQUIRED: storeName
 
-			let store = STORE(box.boxName + '.' + storeName);
+			const store = STORE(box.boxName + '.' + storeName);
 
-			let save = self.save = store.save;
-			
-			let get = self.get = store.get;
-			
-			let remove = self.remove = store.remove;
-			
-			let all = self.all = store.all;
-			
-			let count = self.count = store.count;
-			
-			let clear = self.clear = store.clear;
+			const save = self.save = store.save;
+
+			const get = self.get = store.get;
+
+			const remove = self.remove = store.remove;
+
+			const all = self.all = store.all;
+
+			const count = self.count = store.count;
+
+			const clear = self.clear = store.clear;
 		}
 	});
 });
@@ -3838,24 +3838,24 @@ FOR_BOX((box) => {
  * 노드에 스타일을 지정합니다.
  */
 global.ADD_STYLE = METHOD({
-	
+
 	run : (params) => {
 		//REQUIRED: params
 		//REQUIRED: params.node		스타일을 지정할 노드
 		//REQUIRED: params.style	스타일 데이터
 
-		let node = params.node;
-		let style = params.style;
-		let el = node.getWrapperEl();
+		const node = params.node;
+		const style = params.style;
+		const el = node.getWrapperEl();
 
 		EACH(style, (value, name) => {
-			
+
 			if (value !== undefined) {
 
 				// on display resize
 				if (name === 'onDisplayResize') {
 
-					let resizeEvent = EVENT({
+					const resizeEvent = EVENT({
 						name : 'resize'
 					}, RAR(() => {
 
@@ -3872,7 +3872,7 @@ global.ADD_STYLE = METHOD({
 					});
 
 				} else {
-					
+
 					// flt -> float
 					if (name === 'flt') {
 						el.style.cssFloat = value;
@@ -3882,7 +3882,7 @@ global.ADD_STYLE = METHOD({
 					else if (typeof value === 'number' && name !== 'zIndex' && name !== 'opacity') {
 						el.style[name] = value + 'px';
 					}
-					
+
 					// set background image. (not need url prefix.)
 					else if (name === 'backgroundImage' && value !== 'none') {
 						el.style[name] = 'url(' + value + ')';
@@ -3902,11 +3902,11 @@ global.ADD_STYLE = METHOD({
  * 노드에 애니메이션을 지정합니다.
  */
 global.ANIMATE = METHOD((m) => {
-	
-	let keyframesCount = 0;
-	
+
+    let keyframesCount = 0;
+
 	return {
-		
+
 		run : (params, animationEndHandler) => {
 			//REQUIRED: params
 			//REQUIRED: params.node				애니메이션을 지정할 노드
@@ -3917,61 +3917,61 @@ global.ANIMATE = METHOD((m) => {
 			//OPTIONAL: params.iterationCount	애니메이션을 몇번 발동시킬지 (입력하지 않으면 1, 계속 애니메이션이 발동되도록 하려면 'infinite' 지정)
 			//OPTIONAL: params.direction		애니메이션의 방향 (입력하지 않으면 'normal', 'reverse', 'alternate', 'alternate-reverse' 사용 가능)
 			//OPTIONAL: animationEndHandler		애니메이션이 끝날 때 호출될 핸들러
-			
-			let node = params.node;
-			let keyframes = params.keyframes;
-			let duration = params.duration === undefined ? 0.5 : params.duration;
-			let timingFunction = params.timingFunction === undefined ? 'ease' : params.timingFunction;
-			let delay = params.delay === undefined ? 0 : params.delay;
-			let iterationCount = params.iterationCount === undefined ? 1 : params.iterationCount;
-			let direction = params.direction === undefined ? 'normal' : params.direction;
-			
-			let keyframesName = '__KEYFRAMES_' + keyframesCount;
-			let keyframesStr = '';
-			
-			let keyframesStartStyle;
-			let keyframesFinalStyle;
-			
+
+			const node = params.node;
+			const keyframes = params.keyframes;
+			const duration = params.duration === undefined ? 0.5 : params.duration;
+			const timingFunction = params.timingFunction === undefined ? 'ease' : params.timingFunction;
+			const delay = params.delay === undefined ? 0 : params.delay;
+			const iterationCount = params.iterationCount === undefined ? 1 : params.iterationCount;
+			const direction = params.direction === undefined ? 'normal' : params.direction;
+
+			const keyframesName = '__KEYFRAMES_' + keyframesCount;
+            let keyframesStr = '';
+
+            let keyframesStartStyle;
+            let keyframesFinalStyle;
+
 			keyframesCount += 1;
-			
+
 			EACH(keyframes, (style, key) => {
-				
+
 				keyframesStr += key + '{';
-	
+
 				EACH(style, (value, name) => {
-	
+
 					if (typeof value === 'number' && name !== 'zIndex' && name !== 'opacity') {
 						value = value + 'px';
 					}
-	
+
 					keyframesStr += name.replace(/([A-Z])/g, '-$1').toLowerCase() + ':' + value + ';';
 				});
-	
+
 				keyframesStr += '}';
-	
+
 				if (key === 'from' || key === '0%') {
 					keyframesStartStyle = style;
 				} else if (key === 'to' || key === '100%') {
 					keyframesFinalStyle = style;
 				}
 			});
-			
+
 			// create keyframes style element.
-			let keyframesStyleEl = document.createElement('style');
+			const keyframesStyleEl = document.createElement('style');
 			keyframesStyleEl.type = 'text/css';
 			keyframesStyleEl.appendChild(document.createTextNode('@keyframes ' + keyframesName + '{' + keyframesStr + '}'));
 			document.getElementsByTagName('head')[0].appendChild(keyframesStyleEl);
-			
+
 			node.addStyle(keyframesStartStyle);
-			
+
 			node.addStyle({
 				animation : keyframesName + ' ' + duration + 's ' + timingFunction + ' ' + delay + 's ' + iterationCount + ' ' + direction
 			});
-			
+
 			node.addStyle(keyframesFinalStyle);
-	
+
 			if (animationEndHandler !== undefined && iterationCount === 1) {
-	
+
 				DELAY(duration, () => {
 					animationEndHandler(node);
 				});
@@ -4016,11 +4016,11 @@ global.DOM = CLASS({
 		//OPTIONAL: params.on		이벤트
 		//OPTIONAL: params.__TEXT	UPPERCASE가 문자열 DOM 객체를 생성하기 위해 내부적으로 사용하는 파라미터
 
-		let tag = params.tag;
-		let el = params.el;
-		let id = params.id;
-		let cls = params.cls;
-		let __TEXT = params.__TEXT;
+		const tag = params.tag;
+        let el = params.el;
+		const id = params.id;
+		const cls = params.cls;
+		const __TEXT = params.__TEXT;
 
 		// when tag is not undefined
 		if (tag !== undefined) {
@@ -4042,11 +4042,11 @@ global.DOM = CLASS({
 			}));
 		}
 
-		let getEl = self.getEl = () => {
+		const getEl = self.getEl = () => {
 			return el;
 		};
 
-		let setEl = inner.setEl = (_el) => {
+		const setEl = inner.setEl = (_el) => {
 			//REQUIRED: _el
 
 			el = _el;
@@ -4056,24 +4056,24 @@ global.DOM = CLASS({
 
 		setEl(el);
 
-		let setAttr = inner.setAttr = (params) => {
+		const setAttr = inner.setAttr = (params) => {
 			//REQUIRED: params
 			//REQUIRED: params.name
 			//REQUIRED: params.value
 
-			let name = params.name;
-			let value = params.value;
+			const name = params.name;
+			const value = params.value;
 
 			el.setAttribute(name, value);
 		};
-		
+
 		if (id !== undefined) {
 			setAttr({
 				name : 'id',
 				value : id
 			});
 		}
-		
+
 		if (cls !== undefined) {
 			setAttr({
 				name : 'class',
@@ -4094,22 +4094,22 @@ global.NODE = CLASS({
 		//OPTIONAL: params.c		자식 노드. 하나의 노드를 지정하거나, 노드들의 배열을 지정할 수 있습니다.
 		//OPTIONAL: params.on		이벤트
 
-		let wrapperDom;
-		let contentDom;
-		
-		let wrapperEl;
-		let contentEl;
-		
-		let waitingAfterNodes;
-		let waitingBeforeNodes;
-		
-		let parentNode;
-		let childNodes = [];
-		
-		let originDisplay;
-		let data;
+        let wrapperDom;
+        let contentDom;
 
-		let setWrapperDom = inner.setWrapperDom = (dom) => {
+        let wrapperEl;
+        let contentEl;
+
+        let waitingAfterNodes;
+        let waitingBeforeNodes;
+
+        let parentNode;
+		const childNodes = [];
+
+        let originDisplay;
+        let data;
+
+		const setWrapperDom = inner.setWrapperDom = (dom) => {
 			//REQUIRED: dom
 
 			wrapperDom = dom;
@@ -4137,37 +4137,37 @@ global.NODE = CLASS({
 			});
 		};
 
-		let setContentDom = inner.setContentDom = (dom) => {
+		const setContentDom = inner.setContentDom = (dom) => {
 			//REQUIRED: dom
 
 			contentDom = dom;
 			contentEl = dom.getEl();
 		};
 
-		let setDom = inner.setDom = (dom) => {
+		const setDom = inner.setDom = (dom) => {
 			//REQUIRED: dom
 
 			setWrapperDom(dom);
 			setContentDom(dom);
 		};
 
-		let getWrapperDom = self.getWrapperDom = () => {
+		const getWrapperDom = self.getWrapperDom = () => {
 			return wrapperDom;
 		};
 
-		let getContentDom = self.getContentDom = () => {
+		const getContentDom = self.getContentDom = () => {
 			return contentDom;
 		};
 
-		let getWrapperEl = self.getWrapperEl = () => {
+		const getWrapperEl = self.getWrapperEl = () => {
 			return wrapperEl;
 		};
 
-		let getContentEl = self.getContentEl = () => {
+		const getContentEl = self.getContentEl = () => {
 			return contentEl;
 		};
 
-		let attach = (node, index) => {
+		const attach = (node, index) => {
 			//REQUIRED: node
 			//OPTIOANL: index
 
@@ -4178,7 +4178,7 @@ global.NODE = CLASS({
 			} else {
 				parentNode.getChildren().splice(index, 0, self);
 			}
-			
+
 			EVENT.fireAll({
 				node : self,
 				name : 'attach'
@@ -4212,9 +4212,9 @@ global.NODE = CLASS({
 			}
 		};
 
-		let append = self.append = (node) => {
+		const append = self.append = (node) => {
 			//REQUIRED: node
-			
+
 			// append child.
 			if (CHECK_IS_DATA(node) === true) {
 				node.appendTo(self);
@@ -4232,7 +4232,7 @@ global.NODE = CLASS({
 			// append string.
 			else {
 
-				let splits = String(node === undefined ? '' : node).split('\n');
+				const splits = String(node === undefined ? '' : node).split('\n');
 
 				EACH(splits, (text, i) => {
 
@@ -4248,13 +4248,13 @@ global.NODE = CLASS({
 			}
 		};
 
-		let appendTo = self.appendTo = (node) => {
+		const appendTo = self.appendTo = (node) => {
 			//REQUIRED: node
-			
-			let parentEl = node.getContentEl();
+
+			const parentEl = node.getContentEl();
 
 			if (parentEl !== undefined) {
-				
+
 				parentEl.appendChild(wrapperEl);
 
 				attach(node);
@@ -4263,7 +4263,7 @@ global.NODE = CLASS({
 			return self;
 		};
 
-		let prepend = self.prepend = (node) => {
+		const prepend = self.prepend = (node) => {
 			//REQUIRED: node
 
 			// prepend child.
@@ -4283,7 +4283,7 @@ global.NODE = CLASS({
 			// prepend string.
 			else {
 
-				let splits = String(node === undefined ? '' : node).split('\n');
+				const splits = String(node === undefined ? '' : node).split('\n');
 
 				REPEAT({
 					start : splits.length - 1,
@@ -4302,13 +4302,13 @@ global.NODE = CLASS({
 			}
 		};
 
-		let prependTo = self.prependTo = (node) => {
+		const prependTo = self.prependTo = (node) => {
 			//REQUIRED: node
 
-			let parentEl = node.getContentEl();
+			const parentEl = node.getContentEl();
 
 			if (parentEl !== undefined) {
-				
+
 				if (parentEl.childNodes[0] === undefined) {
 					parentEl.appendChild(wrapperEl);
 				} else {
@@ -4321,44 +4321,44 @@ global.NODE = CLASS({
 			return self;
 		};
 
-		let after = self.after = (node) => {
+		const after = self.after = (node) => {
 			//REQUIRED: node
 
 			if (wrapperEl !== undefined) {
-	
+
 				// wait after node.
 				if (wrapperEl.parentNode === TO_DELETE) {
-	
+
 					if (waitingAfterNodes === undefined) {
 						waitingAfterNodes = [];
 					}
-	
+
 					waitingAfterNodes.push(node);
 				}
-	
+
 				// after node.
 				else {
-	
+
 					// after child.
 					if (CHECK_IS_DATA(node) === true) {
 						node.insertAfter(self);
 					}
-	
+
 					// after string.
 					else {
-	
-						let splits = String(node === undefined ? '' : node).split('\n');
-	
+
+						const splits = String(node === undefined ? '' : node).split('\n');
+
 						REPEAT({
 							start : splits.length - 1,
 							end : 0
 						}, (i) => {
-	
+
 							after(DOM({
 								tag : '__STRING',
 								__TEXT : splits[i]
 							}));
-	
+
 							if (i < splits.length - 1) {
 								after(BR());
 							}
@@ -4368,21 +4368,21 @@ global.NODE = CLASS({
 			}
 		};
 
-		let insertAfter = self.insertAfter = (node) => {
+		const insertAfter = self.insertAfter = (node) => {
 			//REQUIRED: node
 
-			let beforeEl = node.getWrapperEl();
-			
+			const beforeEl = node.getWrapperEl();
+
 			if (beforeEl !== undefined) {
-				
+
 				beforeEl.parentNode.insertBefore(wrapperEl, beforeEl.nextSibling);
-				
-				let nowIndex = FIND({
+
+				const nowIndex = FIND({
 					array : node.getParent().getChildren(),
 					value : self
 				});
-				
-				let toIndex = FIND({
+
+				const toIndex = FIND({
 					array : node.getParent().getChildren(),
 					value : node
 				}) + 1;
@@ -4393,41 +4393,41 @@ global.NODE = CLASS({
 			return self;
 		};
 
-		let before = self.before = (node) => {
+		const before = self.before = (node) => {
 			//REQUIRED: node
-			
+
 			if (wrapperEl !== undefined) {
-	
+
 				// wait before node.
 				if (wrapperEl.parentNode === TO_DELETE) {
-	
+
 					if (waitingBeforeNodes === undefined) {
 						waitingBeforeNodes = [];
 					}
-	
+
 					waitingBeforeNodes.push(node);
 				}
-	
+
 				// before node.
 				else {
-	
+
 					// before child.
 					if (CHECK_IS_DATA(node) === true) {
 						node.insertBefore(self);
 					}
-	
+
 					// before string.
 					else {
-	
-						let splits = String(node === undefined ? '' : node).split('\n');
-	
+
+						const splits = String(node === undefined ? '' : node).split('\n');
+
 						EACH(splits, (text, i) => {
-	
+
 							before(DOM({
 								tag : '__STRING',
 								__TEXT : text
 							}));
-	
+
 							if (i < splits.length - 1) {
 								before(BR());
 							}
@@ -4437,13 +4437,13 @@ global.NODE = CLASS({
 			}
 		};
 
-		let insertBefore = self.insertBefore = (node) => {
+		const insertBefore = self.insertBefore = (node) => {
 			//REQUIRED: node
 
-			let afterEl = node.getWrapperEl();
+			const afterEl = node.getWrapperEl();
 
 			if (afterEl !== undefined) {
-				
+
 				afterEl.parentNode.insertBefore(wrapperEl, afterEl);
 
 				attach(node.getParent(), FIND({
@@ -4455,13 +4455,13 @@ global.NODE = CLASS({
 			return self;
 		};
 
-		let getChildren = self.getChildren = () => {
+		const getChildren = self.getChildren = () => {
 			return childNodes;
 		};
 
-		let setParent = self.setParent = (node) => {
+		const setParent = self.setParent = (node) => {
 			//OPTIONAL: node
-			
+
 			if (parentNode !== undefined) {
 				REMOVE({
 					array : parentNode.getChildren(),
@@ -4471,18 +4471,18 @@ global.NODE = CLASS({
 
 			parentNode = node;
 		};
-		
-		let getParent = self.getParent = () => {
+
+		const getParent = self.getParent = () => {
 			return parentNode;
 		};
 
-		let empty = self.empty = () => {
+		const empty = self.empty = () => {
 			EACH(childNodes, (child) => {
 				child.remove();
 			});
 		};
 
-		let remove = self.remove = () => {
+		const remove = self.remove = () => {
 
 			if (wrapperEl !== undefined && wrapperEl.parentNode !== TO_DELETE) {
 
@@ -4504,12 +4504,12 @@ global.NODE = CLASS({
 				wrapperEl = undefined;
 				contentEl = undefined;
 			}
-			
+
 			// free memory.
 			data = undefined;
 		};
 
-		let on = self.on = (eventName, eventHandler) => {
+		const on = self.on = (eventName, eventHandler) => {
 			//REQUIRED: eventName
 			//REQUIRED: eventHandler
 
@@ -4519,7 +4519,7 @@ global.NODE = CLASS({
 			}, eventHandler);
 		};
 
-		let off = self.off = (eventName, eventHandler) => {
+		const off = self.off = (eventName, eventHandler) => {
 			//REQUIRED: eventName
 			//OPTIONAL: eventHandler
 
@@ -4538,17 +4538,17 @@ global.NODE = CLASS({
 				});
 			}
 		};
-		
-		let fireEvent = self.fireEvent = (eventName) => {
+
+		const fireEvent = self.fireEvent = (eventName) => {
 			//REQUIRED: eventName
-			
+
 			EVENT.fireAll({
 				node : self,
 				name : eventName
 			});
 		};
 
-		let addStyle = self.addStyle = (style) => {
+		const addStyle = self.addStyle = (style) => {
 			//REQUIRED: style
 
 			ADD_STYLE({
@@ -4557,43 +4557,43 @@ global.NODE = CLASS({
 			});
 		};
 
-		let getStyle = self.getStyle = (name) => {
+		const getStyle = self.getStyle = (name) => {
 			//REQUIRED: name
-			
+
 			if (wrapperEl !== undefined) {
 
-				let styles = wrapperEl.style;
+				const styles = wrapperEl.style;
 
 				if (styles !== undefined) {
 
-					let style = styles[name];
+					const style = styles[name];
 
 					return style === '' ? undefined : (style.substring(style.length - 2) === 'px' ? REAL(style) : style);
 				}
 			}
 		};
 
-		let getWidth = self.getWidth = () => {
+		const getWidth = self.getWidth = () => {
 			return wrapperEl.offsetWidth;
 		};
 
-		let getInnerWidth = self.getInnerWidth = () => {
+		const getInnerWidth = self.getInnerWidth = () => {
 			return wrapperEl.clientWidth;
 		};
 
-		let getHeight = self.getHeight = () => {
+		const getHeight = self.getHeight = () => {
 			return wrapperEl.offsetHeight;
 		};
 
-		let getInnerHeight = self.getInnerHeight = () => {
+		const getInnerHeight = self.getInnerHeight = () => {
 			return wrapperEl.clientHeight;
 		};
 
-		let getLeft = self.getLeft = () => {
+		const getLeft = self.getLeft = () => {
 
-			let left = 0;
-			
-			let parentEl = wrapperEl;
+            let left = 0;
+
+            let parentEl = wrapperEl;
 
 			do {
 				left += parentEl.offsetLeft - (parentEl === document.body ? 0 : parentEl.scrollLeft);
@@ -4603,11 +4603,11 @@ global.NODE = CLASS({
 			return left;
 		};
 
-		let getTop = self.getTop = () => {
+		const getTop = self.getTop = () => {
 
-			let top = 0;
-			
-			let parentEl = wrapperEl;
+            let top = 0;
+
+            let parentEl = wrapperEl;
 
 			do {
 				top += parentEl.offsetTop - (parentEl === document.body ? 0 : parentEl.scrollTop);
@@ -4617,14 +4617,14 @@ global.NODE = CLASS({
 			return top;
 		};
 
-		let hide = self.hide = () => {
+		const hide = self.hide = () => {
 
 			addStyle({
 				display : 'none'
 			});
 		};
 
-		let show = self.show = () => {
+		const show = self.show = () => {
 
 			addStyle({
 				display : originDisplay === undefined ? '' : originDisplay
@@ -4644,7 +4644,7 @@ global.NODE = CLASS({
 			}
 		};
 
-		let checkIsShowing = self.checkIsShowing = () => {
+		const checkIsShowing = self.checkIsShowing = () => {
 
 			if (wrapperEl === document.body) {
 				return true;
@@ -4652,66 +4652,66 @@ global.NODE = CLASS({
 				return parentNode !== undefined && parentNode.checkIsShowing() === true && getStyle('display') !== 'none';
 			}
 		};
-		
-		let scrollTo = self.scrollTo = (params) => {
+
+		const scrollTo = self.scrollTo = (params) => {
 			//REQUIRED: params
 			//OPTIONAL: params.left
 			//OPTIONAL: params.top
-			
-			let left = params.left;
-			let top = params.top;
-			
+
+			const left = params.left;
+			const top = params.top;
+
 			if (contentEl !== undefined) {
-			
+
 				if (left !== undefined) {
 					contentEl.scrollLeft = left;
 				}
-				
+
 				if (top !== undefined) {
 					contentEl.scrollTop = top;
 				}
 			}
 		};
-		
-		let getScrollLeft = self.getScrollLeft = () => {
+
+		const getScrollLeft = self.getScrollLeft = () => {
 			if (contentEl !== undefined) {
 				return contentEl.scrollLeft;
 			} else {
 				return 0;
 			}
 		};
-		
-		let getScrollTop = self.getScrollTop = () => {
+
+		const getScrollTop = self.getScrollTop = () => {
 			if (contentEl !== undefined) {
 				return contentEl.scrollTop;
 			} else {
 				return 0;
 			}
 		};
-		
-		let getScrollWidth = self.getScrollWidth = () => {
+
+		const getScrollWidth = self.getScrollWidth = () => {
 			if (contentEl !== undefined) {
 				return contentEl.scrollWidth;
 			} else {
 				return 0;
 			}
 		};
-		
-		let getScrollHeight = self.getScrollHeight = () => {
+
+		const getScrollHeight = self.getScrollHeight = () => {
 			if (contentEl !== undefined) {
 				return contentEl.scrollHeight;
 			} else {
 				return 0;
 			}
 		};
-		
-		let setData = self.setData = (_data) => {
+
+		const setData = self.setData = (_data) => {
 			//REQUIRED: _data
-			
+
 			data = _data;
 		};
-		
-		let getData = self.getData = () => {
+
+		const getData = self.getData = () => {
 			return data;
 		};
 	},
@@ -4722,9 +4722,9 @@ global.NODE = CLASS({
 		//OPTIONAL: params.c		자식 노드. 하나의 노드를 지정하거나, 노드들의 배열을 지정할 수 있습니다.
 		//OPTIONAL: params.on		이벤트
 
-		let style;
-		let children;
-		let on;
+        let style;
+        let children;
+        let on;
 
 		// init params.
 		if (params !== undefined) {
@@ -4760,15 +4760,15 @@ global.E = CLASS({
 		//REQUIRED: params
 		//REQUIRED: params.e
 		//REQUIRED: params.el
-		
-		let e = params.e;
-		let el = params.el;
-		
-		let isBubblingStoped;
 
-		let checkIsDescendant = (parent, child) => {
+		const e = params.e;
+		const el = params.el;
 
-			let node = child.parentNode;
+        let isBubblingStoped;
+
+		const checkIsDescendant = (parent, child) => {
+
+            let node = child.parentNode;
 
 			while (node !== TO_DELETE) {
 
@@ -4782,30 +4782,30 @@ global.E = CLASS({
 			return false;
 		};
 
-		let stopDefault = self.stopDefault = () => {
+		const stopDefault = self.stopDefault = () => {
 			e.preventDefault();
 		};
 
-		let stopBubbling = self.stopBubbling = () => {
+		const stopBubbling = self.stopBubbling = () => {
 			e.stopPropagation();
 			isBubblingStoped = true;
 		};
-		
-		let checkIsBubblingStoped = self.checkIsBubblingStoped = () => {
+
+		const checkIsBubblingStoped = self.checkIsBubblingStoped = () => {
 			return isBubblingStoped;
 		};
 
-		let stop = self.stop = () => {
+		const stop = self.stop = () => {
 			stopDefault();
 			stopBubbling();
 		};
 
-		let getLeft = self.getLeft = () => {
-			
+		const getLeft = self.getLeft = () => {
+
 			// if is touch mode
 			if (INFO.checkIsTouchMode() === true) {
-				
-				let touchPageX;
+
+                let touchPageX;
 
 				if (e.touches !== undefined && e.touches[0] !== undefined) {
 
@@ -4851,12 +4851,12 @@ global.E = CLASS({
 			return e.pageX;
 		};
 
-		let getTop = self.getTop = () => {
+		const getTop = self.getTop = () => {
 
 			// if is touch mode
 			if (INFO.checkIsTouchMode() === true) {
-				
-				let touchPageY;
+
+                let touchPageY;
 
 				if (e.touches !== undefined && e.touches[0] !== undefined) {
 
@@ -4902,11 +4902,11 @@ global.E = CLASS({
 			return e.pageY;
 		};
 
-		let getKey = self.getKey = () => {
+		const getKey = self.getKey = () => {
 			return e.key;
 		};
-		
-		let getWheelDelta = self.getWheelDelta = () => {
+
+		const getWheelDelta = self.getWheelDelta = () => {
 			return e.deltaY;
 		};
 	}
@@ -4919,31 +4919,31 @@ global.EMPTY_E = CLASS({
 
 	init : (inner, self) => {
 
-		let stopDefault = self.stopDefault = () => {
+		const stopDefault = self.stopDefault = () => {
 			// ignore.
 		};
 
-		let stopBubbling = self.stopBubbling = () => {
+		const stopBubbling = self.stopBubbling = () => {
 			// ignore.
 		};
 
-		let stop = self.stop = () => {
+		const stop = self.stop = () => {
 			// ignore.
 		};
 
-		let getLeft = self.getLeft = () => {
+		const getLeft = self.getLeft = () => {
 			return -Infinity;
 		};
 
-		let getTop = self.getTop = () => {
+		const getTop = self.getTop = () => {
 			return -Infinity;
 		};
 
-		let getKey = self.getKey = () => {
+		const getKey = self.getKey = () => {
 			return '';
 		};
-		
-		let getWheelDelta = self.getWheelDelta = () => {
+
+		const getWheelDelta = self.getWheelDelta = () => {
 			return 0;
 		};
 	}
@@ -4954,21 +4954,21 @@ global.EMPTY_E = CLASS({
  */
 global.EVENT = CLASS((cls) => {
 
-	let eventMaps = {};
-	
-	let fireAll = cls.fireAll = (nameOrParams) => {
+	const eventMaps = {};
+
+	const fireAll = cls.fireAll = (nameOrParams) => {
 		//REQUIRED: nameOrParams
 		//OPTIONAL: nameOrParams.node	이벤트가 등록된 노드
 		//REQUIRED: nameOrParams.name	이벤트 이름
 
-		let node;
-		let name;
-		
-		let nodeId;
-		
-		let eventMap;
+        let node;
+        let name;
 
-		let ret;
+        let nodeId;
+
+        let eventMap;
+
+        let ret;
 
 		// init params.
 		if (CHECK_IS_DATA(nameOrParams) !== true) {
@@ -4988,14 +4988,14 @@ global.EVENT = CLASS((cls) => {
 
 		if (eventMap !== undefined) {
 
-			let events = eventMap[name];
+			const events = eventMap[name];
 
 			if (events !== undefined) {
 
 				EACH(events, (evt) => {
 
 					if (evt.fire() === false) {
-						
+
 						ret = false;
 					}
 				});
@@ -5005,17 +5005,17 @@ global.EVENT = CLASS((cls) => {
 		return ret;
 	};
 
-	let removeAll = cls.removeAll = (nameOrParams) => {
+	const removeAll = cls.removeAll = (nameOrParams) => {
 		//OPTIONAL: nameOrParams
 		//OPTIONAL: nameOrParams.node	이벤트가 등록된 노드
 		//OPTIONAL: nameOrParams.name	이벤트 이름
-		
-		let node;
-		let name;
-		
-		let nodeId;
-		
-		let eventMap;
+
+        let node;
+        let name;
+
+        let nodeId;
+
+        let eventMap;
 
 		// init params.
 		if (CHECK_IS_DATA(nameOrParams) !== true) {
@@ -5037,7 +5037,7 @@ global.EVENT = CLASS((cls) => {
 
 			if (name !== undefined) {
 
-				let events = eventMap[name];
+				const events = eventMap[name];
 
 				if (events !== undefined) {
 
@@ -5057,19 +5057,19 @@ global.EVENT = CLASS((cls) => {
 		}
 	};
 
-	let remove = cls.remove = (nameOrParams, eventHandler) => {
+	const remove = cls.remove = (nameOrParams, eventHandler) => {
 		//REQUIRED: nameOrParams
 		//OPTIONAL: nameOrParams.node	이벤트가 등록된 노드
 		//REQUIRED: nameOrParams.name	이벤트 이름
 		//REQUIRED: eventHandler
-		
-		let node;
-		let name;
 
-		let nodeId;
-		
-		let eventMap;
-		
+        let node;
+        let name;
+
+        let nodeId;
+
+        let eventMap;
+
 		// init params.
 		if (CHECK_IS_DATA(nameOrParams) !== true) {
 			name = nameOrParams;
@@ -5088,7 +5088,7 @@ global.EVENT = CLASS((cls) => {
 
 		if (eventMap !== undefined) {
 
-			let events = eventMap[name];
+			const events = eventMap[name];
 
 			if (events !== undefined) {
 
@@ -5109,18 +5109,18 @@ global.EVENT = CLASS((cls) => {
 			//OPTIONAL: nameOrParams.lowNode	이벤트 '등록'은 node 파라미터에 지정된 노드에 하지만, 실제 이벤트의 동작을 '적용'할 노드는 다른 경우 해당 노드
 			//REQUIRED: nameOrParams.name		이벤트 이름
 			//REQUIRED: eventHandler
-			
-			let node;
-			let lowNode;
-			let name;
-			
-			let nodeId;
-			
-			let eventLows = [];
-			
-			let subEvent;
-			
-			let lastTapTime;
+
+            let node;
+            let lowNode;
+            let name;
+
+            let nodeId;
+
+			const eventLows = [];
+
+            let subEvent;
+
+            let lastTapTime;
 
 			// init params.
 			if (CHECK_IS_DATA(nameOrParams) !== true) {
@@ -5153,7 +5153,7 @@ global.EVENT = CLASS((cls) => {
 
 			eventMaps[nodeId][name].push(self);
 
-			let removeFromMap = () => {
+			const removeFromMap = () => {
 
 				REMOVE({
 					array : eventMaps[nodeId][name],
@@ -5171,7 +5171,7 @@ global.EVENT = CLASS((cls) => {
 
 			// tap event (simulate click event.)
 			if (name === 'tap') {
-				
+
 				eventLows.push(EVENT_LOW({
 					node : node,
 					lowNode : lowNode,
@@ -5180,7 +5180,7 @@ global.EVENT = CLASS((cls) => {
 			}
 
 			// double tap event (not exists, simulate.)
-			else if (name === 'doubletap') {
+			else if (name === 'doubconstap') {
 
 				subEvent = EVENT({
 					node : node,
@@ -5205,7 +5205,7 @@ global.EVENT = CLASS((cls) => {
 
 			// when is not touch mode, touchmove link to mousedown event
 			else if (name === 'touchstart') {
-				
+
 				// by touch
 				eventLows.push(EVENT_LOW({
 					node : node,
@@ -5216,7 +5216,7 @@ global.EVENT = CLASS((cls) => {
 						eventHandler(e, node);
 					}
 				}));
-				
+
 				// by mouse
 				eventLows.push(EVENT_LOW({
 					node : node,
@@ -5242,7 +5242,7 @@ global.EVENT = CLASS((cls) => {
 						eventHandler(e, node);
 					}
 				}));
-				
+
 				// by mouse
 				eventLows.push(EVENT_LOW({
 					node : node,
@@ -5268,7 +5268,7 @@ global.EVENT = CLASS((cls) => {
 						eventHandler(e, node);
 					}
 				}));
-				
+
 				// by mouse
 				eventLows.push(EVENT_LOW({
 					node : node,
@@ -5306,11 +5306,11 @@ global.EVENT = CLASS((cls) => {
 					}
 				}));
 			}
-			
+
 			else if (name === 'keydown') {
-				
-				let lastKey;
-				
+
+                let lastKey;
+
 				eventLows.push(EVENT_LOW({
 					node : node,
 					lowNode : lowNode,
@@ -5321,7 +5321,7 @@ global.EVENT = CLASS((cls) => {
 						lastKey = e.getKey();
 					}
 				}));
-				
+
 				eventLows.push(EVENT_LOW({
 					node : node,
 					lowNode : lowNode,
@@ -5335,13 +5335,13 @@ global.EVENT = CLASS((cls) => {
 			else if (name !== 'attach' && name !== 'show' && name !== 'remove') {
 				eventLows.push(EVENT_LOW(nameOrParams, eventHandler));
 			}
-			
-			let remove = self.remove = () => {
+
+			const remove = self.remove = () => {
 
 				EACH(eventLows, (eventLow) => {
 					eventLow.remove();
 				});
-					
+
 				if (subEvent !== undefined) {
 					subEvent.remove();
 				}
@@ -5349,13 +5349,13 @@ global.EVENT = CLASS((cls) => {
 				removeFromMap();
 			};
 
-			let fire = self.fire = () => {
+			const fire = self.fire = () => {
 
 				// pass empty e object.
 				return eventHandler(EMPTY_E(), node);
 			};
 
-			let getEventHandler = self.getEventHandler = () => {
+			const getEventHandler = self.getEventHandler = () => {
 				return eventHandler;
 			};
 		}
@@ -5372,14 +5372,14 @@ global.EVENT_LOW = CLASS({
 		//OPTIONAL: nameOrParams.lowNode	이벤트 '등록'은 node 파라미터에 지정된 노드에 하지만, 실제 이벤트의 동작을 '적용'할 노드는 다른 경우 해당 노드
 		//REQUIRED: nameOrParams.name		이벤트 이름
 		//REQUIRED: eventHandler
-		
-		let node;
-		let lowNode;
-		let name;
-		
-		let el;
-		
-		let innerHandler;
+
+        let node;
+        let lowNode;
+        let name;
+
+        let el;
+
+        let innerHandler;
 
 		// init params.
 		if (CHECK_IS_DATA(nameOrParams) !== true) {
@@ -5393,7 +5393,7 @@ global.EVENT_LOW = CLASS({
 				lowNode = node;
 			}
 		}
-		
+
 		if (lowNode !== undefined) {
 			el = lowNode.getWrapperEl();
 		} else if (global['on' + name] === undefined) {
@@ -5401,23 +5401,23 @@ global.EVENT_LOW = CLASS({
 		} else {
 			el = global;
 		}
-		
+
 		el.addEventListener(name, innerHandler = (e) => {
-			
-			let result = eventHandler(E({
+
+			const result = eventHandler(E({
 				e : e,
 				el : el
 			}), node);
-			
+
 			if (name === 'beforeunload' && result !== undefined) {
 				e.returnValue = result;
 			}
 
 			return result;
-			
+
 		}, false);
 
-		let remove = self.remove = () => {
+		const remove = self.remove = () => {
 			el.removeEventListener(name, innerHandler, false);
 		};
 	}
@@ -5435,16 +5435,16 @@ global.EVENT_ONCE = CLASS({
 		//REQUIRED: nameOrParams.name		이벤트 이름
 		//REQUIRED: eventHandler
 
-		let evt = EVENT(nameOrParams, (e, node) => {
+		const evt = EVENT(nameOrParams, (e, node) => {
 			eventHandler(e, node);
 			evt.remove();
 		});
 
-		let remove = self.remove = () => {
+		const remove = self.remove = () => {
 			evt.remove();
 		};
 
-		let fire = self.fire = () => {
+		const fire = self.fire = () => {
 			evt.fire();
 		};
 	}
@@ -5474,11 +5474,11 @@ global.A = CLASS({
 		//OPTIONAL: params.target	이동할 타겟
 		//OPTIONAL: params.c		자식 노드. 하나의 노드를 지정하거나, 노드들의 배열을 지정할 수 있습니다.
 		//OPTIONAL: params.on		이벤트
-		
-		let style;
-		let href;
-		let target;
-		
+
+        let style;
+        let href;
+        let target;
+
 		// init params.
 		if (params !== undefined) {
 			style = params.style;
@@ -5486,7 +5486,7 @@ global.A = CLASS({
 			target = params.target;
 		}
 
-		let setHref = self.setHref = (href) => {
+		const setHref = self.setHref = (href) => {
 			inner.setAttr({
 				name : 'href',
 				value : href
@@ -5503,9 +5503,9 @@ global.A = CLASS({
 				value : target
 			});
 		}
-		
-		let tap = self.tap = () => {
-			
+
+		const tap = self.tap = () => {
+
 			EVENT.fireAll({
 				node : self,
 				name : 'tap'
@@ -5523,14 +5523,14 @@ global.A = CLASS({
 		//OPTIONAL: params.c		자식 노드. 하나의 노드를 지정하거나, 노드들의 배열을 지정할 수 있습니다.
 		//OPTIONAL: params.on		이벤트
 
-		let children;
-		let href;
-		
-		let isHrefContent = false;
-		
-		let append;
-		let prepend;
-		
+        let children;
+        let href;
+
+        let isHrefContent = false;
+
+        let append;
+        let prepend;
+
 		// init params.
 		if (params !== undefined) {
 			children = params.c;
@@ -5539,35 +5539,35 @@ global.A = CLASS({
 
 		// 아무런 내용이 없으면 이동할 경로를 그대로 표시합니다.
 		if (children === undefined && href !== undefined) {
-			
+
 			self.append(href);
-			
+
 			isHrefContent = true;
-			
+
 			OVERRIDE(self.append, (origin) => {
-				
+
 				append = self.append = (node) => {
 					//REQUIRED: node
-					
+
 					if (isHrefContent === true) {
 						self.empty();
 						isHrefContent = false;
 					}
-					
+
 					origin(node);
 				};
 			});
-			
+
 			OVERRIDE(self.prepend, (origin) => {
-				
+
 				prepend = self.prepend = (node) => {
 					//REQUIRED: node
-					
+
 					if (isHrefContent === true) {
 						self.empty();
 						isHrefContent = false;
 					}
-					
+
 					origin(node);
 				};
 			});
@@ -5601,37 +5601,37 @@ global.AUDIO = CLASS({
 		//OPTIONAL: params.c		자식 노드. 하나의 노드를 지정하거나, 노드들의 배열을 지정할 수 있습니다.
 		//OPTIONAL: params.on		이벤트
 
-		let mp3 = params.mp3;
-		let ogg = params.ogg;
-		let isLoop = params.isLoop;
-		
+		const mp3 = params.mp3;
+		const ogg = params.ogg;
+		const isLoop = params.isLoop;
+
 		if (ogg !== undefined && self.getEl().canPlayType('audio/ogg') !== '') {
 			self.getEl().src = ogg;
 		} else if (mp3 !== undefined) {
 			self.getEl().src = mp3;
 		}
-		
+
 		inner.setAttr({
 			name : 'controls',
 			value : 'controls'
 		});
-		
+
 		if (isLoop === true) {
 			inner.setAttr({
 				name : 'loop',
 				value : 'loop'
 			});
 		}
-		
-		let play = self.play = () => {
+
+		const play = self.play = () => {
 			self.getEl().play();
 		};
-		
-		let pause = self.pause = () => {
+
+		const pause = self.pause = () => {
 			self.getEl().pause();
 		};
-		
-		let stop = self.stop = () => {
+
+		const stop = self.stop = () => {
 			self.getEl().pause();
 			self.getEl().currentTime = 0;
 		};
@@ -5694,9 +5694,9 @@ global.CANVAS = CLASS({
 		//OPTIONAL: params.height
 		//OPTIONAL: params.c		자식 노드. 하나의 노드를 지정하거나, 노드들의 배열을 지정할 수 있습니다.
 		//OPTIONAL: params.on		이벤트
-		
-		let width;
-		let height;
+
+        let width;
+        let height;
 
 		// init params.
 		if (params !== undefined) {
@@ -5704,18 +5704,18 @@ global.CANVAS = CLASS({
 			height = params.height;
 		}
 
-		let getContext = self.getContext = (contextType) => {
+		const getContext = self.getContext = (contextType) => {
 			//REQUIRED: contextType
-			
+
 			return self.getEl().getContext(contextType);
 		};
 
-		let setSize = self.setSize = (size) => {
+		const setSize = self.setSize = (size) => {
 			//REQUIRED: size
 			//OPTIONAL: size.width
 			//OPTIONAL: size.height
 
-			let el = self.getEl();
+			const el = self.getEl();
 
 			if (size.width !== undefined) {
 				width = size.width;
@@ -5739,15 +5739,15 @@ global.CANVAS = CLASS({
 			height : height
 		});
 
-		let getWidth = self.getWidth = () => {
+		const getWidth = self.getWidth = () => {
 			return width;
 		};
 
-		let getHeight = self.getHeight = () => {
+		const getHeight = self.getHeight = () => {
 			return height;
 		};
 
-		let getDataURL = self.getDataURL = () => {
+		const getDataURL = self.getDataURL = () => {
 			return self.getEl().toDataURL();
 		};
 	}
@@ -5795,14 +5795,14 @@ global.FORM = CLASS({
 		//OPTIONAL: params.enctype	폼을 전송할때 사용할 인코딩 방법. 업로드 기능 구현에 사용됩니다.
 		//OPTIONAL: params.c		자식 노드. 하나의 노드를 지정하거나, 노드들의 배열을 지정할 수 있습니다.
 		//OPTIONAL: params.on		이벤트
-		
-		let action;
-		let target;
-		let method;
-		let enctype;
 
-		let getData;
-		let setData;
+        let action;
+        let target;
+        let method;
+        let enctype;
+
+        let getData;
+        let setData;
 
 		// init params.
 		if (params !== undefined) {
@@ -5813,14 +5813,14 @@ global.FORM = CLASS({
 		}
 
 		if (action !== undefined) {
-			
+
 			inner.setAttr({
 				name : 'action',
 				value : action
 			});
-			
+
 		} else {
-			
+
 			EVENT({
 				node : self,
 				name : 'submit'
@@ -5851,68 +5851,68 @@ global.FORM = CLASS({
 		}
 
 		OVERRIDE(self.setData, (origin) => {
-			
+
 			getData = self.getData = () => {
-	
-				let data = origin();
-	
-				let f = (node) => {
+
+                let data = origin();
+
+				const f = (node) => {
 					//REQUIRED: node
-	
+
 					EACH(node.getChildren(), (child) => {
-	
+
 						if (child.getValue !== undefined && child.getName !== undefined && child.getName() !== undefined) {
 							data[child.getName()] = child.getValue();
 						}
-	
+
 						f(child);
 					});
 				};
-				
+
 				if (data === undefined) {
 					data = {};
 				}
-	
+
 				f(self);
-	
+
 				return data;
 			};
 		});
 
 		OVERRIDE(self.setData, (origin) => {
-			
+
 			setData = self.setData = (data) => {
 				//REQUIRED: data
-				
-				let f = (node) => {
+
+				const f = (node) => {
 					//REQUIRED: node
-	
+
 					EACH(node.getChildren(), (child) => {
-	
-						let value;
-	
+
+                        let value;
+
 						if (child.setValue !== undefined && child.getName !== undefined && child.getName() !== undefined) {
 							value = data[child.getName()];
 							child.setValue(value === undefined ? '' : value);
 						}
-	
+
 						f(child);
 					});
 				};
-	
+
 				f(self);
-				
+
 				origin(data);
 			};
 		});
 
-		let submit = self.submit = () => {
-			
+		const submit = self.submit = () => {
+
 			EVENT.fireAll({
 				node : self,
 				name : 'submit'
 			});
-			
+
 			if (action !== undefined) {
 				self.getEl().submit();
 			}
@@ -6026,7 +6026,7 @@ global.IFRAME = CLASS({
 	},
 
 	params : () => {
-		
+
 		return {
 			tag : 'iframe',
 			style : {
@@ -6044,9 +6044,9 @@ global.IFRAME = CLASS({
 		//OPTIONAL: params.src
 		//OPTIONAL: params.c		자식 노드. 하나의 노드를 지정하거나, 노드들의 배열을 지정할 수 있습니다.
 		//OPTIONAL: params.on		이벤트
-		
-		let name;
-		let src;
+
+        let name;
+        let src;
 
 		// init params.
 		if (params !== undefined) {
@@ -6061,7 +6061,7 @@ global.IFRAME = CLASS({
 			});
 		}
 
-		let setSrc = self.setSrc = (_src) => {
+		const setSrc = self.setSrc = (_src) => {
 			//REQUIRED: _src
 
 			src = _src;
@@ -6076,7 +6076,7 @@ global.IFRAME = CLASS({
 			setSrc(src);
 		}
 
-		let getSrc = self.getSrc = () => {
+		const getSrc = self.getSrc = () => {
 			return src;
 		};
 	}
@@ -6107,30 +6107,30 @@ global.IMG = CLASS({
 		//REQUIRED: params.src		이미지 경로
 		//OPTIONAL: params.c		자식 노드. 하나의 노드를 지정하거나, 노드들의 배열을 지정할 수 있습니다.
 		//OPTIONAL: params.on		이벤트
-		
-		let src = params.src;
-		let width = params.width;
-		let height = params.height;
 
-		let el = self.getEl();
-		
+        let src = params.src;
+		const width = params.width;
+		const height = params.height;
+
+		const el = self.getEl();
+
 		//OVERRIDE: self.getWidth
-		let getWidth = self.getWidth = () => {
+		const getWidth = self.getWidth = () => {
 			return el.width;
 		};
 
 		//OVERRIDE: self.getHeight
-		let getHeight = self.getHeight = () => {
+		const getHeight = self.getHeight = () => {
 			return el.height;
 		};
 
-		let setSize = self.setSize = (size) => {
+		const setSize = self.setSize = (size) => {
 			//REQUIRED: size
 			//OPTIONAL: size.width
 			//OPTIONAL: size.height
 
-			let width = size.width;
-			let height = size.height;
+			const width = size.width;
+			const height = size.height;
 
 			if (width !== undefined) {
 				el.width = width;
@@ -6146,11 +6146,11 @@ global.IMG = CLASS({
 			height : height
 		});
 
-		let getSrc = self.getSrc = () => {
+		const getSrc = self.getSrc = () => {
 			return src;
 		};
 
-		let setSrc = self.setSrc = (_src) => {
+		const setSrc = self.setSrc = (_src) => {
 			//REQUIRED: _src
 
 			src = _src;
@@ -6172,9 +6172,9 @@ global.IMG = CLASS({
  */
 global.INPUT = CLASS((cls) => {
 
-	let focusingInputIds = [];
+	const focusingInputIds = [];
 
-	let getFocusingInputIds = cls.getFocusingInputIds = (id) => {
+	const getFocusingInputIds = cls.getFocusingInputIds = (id) => {
 		return focusingInputIds;
 	};
 
@@ -6201,26 +6201,26 @@ global.INPUT = CLASS((cls) => {
 			//OPTIONAL: params.value
 			//OPTIONAL: params.accept
 			//OPTIONAL: params.isMultiple
-			//OPTIONAL: params.isOffAutocomplete
+			//OPTIONAL: params.isOffAutocompconste
 			//OPTIONAL: params.c		자식 노드. 하나의 노드를 지정하거나, 노드들의 배열을 지정할 수 있습니다.
 			//OPTIONAL: params.on		이벤트
-			
-			let name;
-			let type;
-			let placeholder;
-			let accept;
-			let isMultiple;
-			let isOffAutocomplete;
 
-			let getName;
-			let getValue;
-			let setValue;
-			let select;
-			let focus;
-			let blur;
-			
-			let toggleCheck;
-			let checkIsChecked;
+            let name;
+            let type;
+            let placeholder;
+            let accept;
+            let isMultiple;
+            let isOffAutocompconste;
+
+            let getName;
+            let getValue;
+            let setValue;
+            let select;
+            let focus;
+            let blur;
+
+            let toggleCheck;
+            let checkIsChecked;
 
 			// init params.
 			if (params !== undefined) {
@@ -6229,7 +6229,7 @@ global.INPUT = CLASS((cls) => {
 				placeholder = params.placeholder;
 				accept = params.accept;
 				isMultiple = params.isMultiple;
-				isOffAutocomplete = params.isOffAutocomplete;
+				isOffAutocompconste = params.isOffAutocompconste;
 			}
 
 			if (type !== undefined) {
@@ -6254,7 +6254,7 @@ global.INPUT = CLASS((cls) => {
 						value : placeholder
 					});
 				}
-				
+
 				if (accept !== undefined) {
 					inner.setAttr({
 						name : 'accept',
@@ -6269,13 +6269,13 @@ global.INPUT = CLASS((cls) => {
 					});
 				}
 
-				if (isOffAutocomplete === true) {
+				if (isOffAutocompconste === true) {
 					inner.setAttr({
-						name : 'autocomplete',
+						name : 'autocompconste',
 						value : 'off'
 					});
 				}
-				
+
 				getName = self.getName = () => {
 					return name;
 				};
@@ -6329,11 +6329,11 @@ global.INPUT = CLASS((cls) => {
 						node : self,
 						name : 'keyup'
 					}, (e) => {
-						
+
 						if (e !== undefined && e.getKey() === 'Enter') {
-							
+
 							DELAY(() => {
-								
+
 								EVENT.fireAll({
 									node : self,
 									name : 'change'
@@ -6422,17 +6422,17 @@ global.INPUT = CLASS((cls) => {
 					value : self.id
 				});
 			});
-			
+
 			// can radio be false
 			if (type === 'radio') {
-				
+
 				EVENT({
 					node : self,
 					name : 'touchstart'
 				}, () => {
-					
+
 					if (checkIsChecked() === true) {
-						
+
 						EVENT_ONCE({
 							node : self,
 							name : 'touchend'
@@ -6457,12 +6457,12 @@ global.INPUT = CLASS((cls) => {
 			//OPTIONAL: params.value
 			//OPTIONAL: params.accept
 			//OPTIONAL: params.isMultiple
-			//OPTIONAL: params.isOffAutocomplete
+			//OPTIONAL: params.isOffAutocompconste
 			//OPTIONAL: params.c		자식 노드. 하나의 노드를 지정하거나, 노드들의 배열을 지정할 수 있습니다.
 			//OPTIONAL: params.on		이벤트
-			
-			let type;
-			let value;
+
+            let type;
+            let value;
 
 			// init params.
 			if (params !== undefined) {
@@ -6544,7 +6544,7 @@ global.OPTGROUP = CLASS({
 		//OPTIONAL: params.c		자식 노드. 하나의 노드를 지정하거나, 노드들의 배열을 지정할 수 있습니다.
 		//OPTIONAL: params.on		이벤트
 
-		let label = params.label;
+		const label = params.label;
 
 		inner.setAttr({
 			name : 'label',
@@ -6576,12 +6576,12 @@ global.OPTION = CLASS({
 		//OPTIONAL: params.value
 		//OPTIONAL: params.c		자식 노드. 하나의 노드를 지정하거나, 노드들의 배열을 지정할 수 있습니다.
 		//OPTIONAL: params.on		이벤트
-		
-		let getValue = self.getValue = () => {
+
+		const getValue = self.getValue = () => {
 			return self.getEl().value;
 		};
 
-		let setValue = self.setValue = (value) => {
+		const setValue = self.setValue = (value) => {
 			//REQUIRED: value
 
 			self.getEl().value = value;
@@ -6596,9 +6596,9 @@ global.OPTION = CLASS({
 		//OPTIONAL: params.value
 		//OPTIONAL: params.c		자식 노드. 하나의 노드를 지정하거나, 노드들의 배열을 지정할 수 있습니다.
 		//OPTIONAL: params.on		이벤트
-		
-		let value;
-		let children;
+
+        let value;
+        let children;
 
 		// init params.
 		if (params !== undefined) {
@@ -6610,7 +6610,7 @@ global.OPTION = CLASS({
 			self.setValue('');
 		} else {
 			self.setValue(value);
-			
+
 			if (children === undefined) {
 				self.append(value);
 			}
@@ -6659,10 +6659,10 @@ global.SELECT = CLASS({
 		//OPTIONAL: params.value
 		//OPTIONAL: params.c		자식 노드. 하나의 노드를 지정하거나, 노드들의 배열을 지정할 수 있습니다.
 		//OPTIONAL: params.on		이벤트
-		
-		let name;
-		
-		let isCtrlDown = false;
+
+        let name;
+
+        let isCtrlDown = false;
 
 		// init params.
 		if (params !== undefined) {
@@ -6676,15 +6676,15 @@ global.SELECT = CLASS({
 			});
 		}
 
-		let getName = self.getName = () => {
+		const getName = self.getName = () => {
 			return name;
 		};
 
-		let getValue = self.getValue = () => {
+		const getValue = self.getValue = () => {
 			return self.getEl().value;
 		};
 
-		let setValue = self.setValue = (value) => {
+		const setValue = self.setValue = (value) => {
 			//REQUIRED: value
 
 			if (self.getEl().value !== value) {
@@ -6701,15 +6701,15 @@ global.SELECT = CLASS({
 			}
 		};
 
-		let select = self.select = () => {
+		const select = self.select = () => {
 			self.getEl().select();
 		};
 
-		let focus = self.focus = () => {
+		const focus = self.focus = () => {
 			self.getEl().focus();
 		};
 
-		let blur = self.blur = () => {
+		const blur = self.blur = () => {
 			self.getEl().blur();
 		};
 
@@ -6717,7 +6717,7 @@ global.SELECT = CLASS({
 			node : self,
 			name : 'keydown'
 		}, (e) => {
-			
+
 			if (e.getKey() === 'Control') {
 				isCtrlDown = true;
 			} else if (isCtrlDown !== true) {
@@ -6773,7 +6773,7 @@ global.SELECT = CLASS({
 		//OPTIONAL: params.c		자식 노드를 지정합니다. 하나의 노드를 지정하거나, 노드들의 배열을 지정할 수 있습니다.
 		//OPTIONAL: params.on		이벤트를 지정합니다.
 
-		let value;
+        let value;
 
 		// init params.
 		if (params !== undefined) {
@@ -6842,9 +6842,9 @@ global.TD = CLASS({
 		//OPTIONAL: params.colspan
 		//OPTIONAL: params.c		자식 노드. 하나의 노드를 지정하거나, 노드들의 배열을 지정할 수 있습니다.
 		//OPTIONAL: params.on		이벤트
-		
-		let rowspan;
-		let colspan;
+
+        let rowspan;
+        let colspan;
 
 		// init params.
 		if (params !== undefined) {
@@ -6894,10 +6894,10 @@ global.TEXTAREA = CLASS({
 		//OPTIONAL: params.c			자식 노드. 하나의 노드를 지정하거나, 노드들의 배열을 지정할 수 있습니다.
 		//OPTIONAL: params.on			이벤트
 
-		let name;
-		let placeholder;
-		
-		let isCtrlDown = false;
+        let name;
+        let placeholder;
+
+        let isCtrlDown = false;
 
 		// init params.
 		if (params !== undefined) {
@@ -6919,15 +6919,15 @@ global.TEXTAREA = CLASS({
 			});
 		}
 
-		let getName = self.getName = () => {
+		const getName = self.getName = () => {
 			return name;
 		};
 
-		let getValue = self.getValue = () => {
+		const getValue = self.getValue = () => {
 			return self.getEl().value;
 		};
 
-		let setValue = self.setValue = (value) => {
+		const setValue = self.setValue = (value) => {
 			//REQUIRED: value
 
 			if (self.getEl().value !== value) {
@@ -6944,15 +6944,15 @@ global.TEXTAREA = CLASS({
 			}
 		};
 
-		let select = self.select = () => {
+		const select = self.select = () => {
 			self.getEl().select();
 		};
 
-		let focus = self.focus = () => {
+		const focus = self.focus = () => {
 			self.getEl().focus();
 		};
 
-		let blur = self.blur = () => {
+		const blur = self.blur = () => {
 			self.getEl().blur();
 		};
 
@@ -7016,7 +7016,7 @@ global.TEXTAREA = CLASS({
 		//OPTIONAL: params.c			자식 노드. 하나의 노드를 지정하거나, 노드들의 배열을 지정할 수 있습니다.
 		//OPTIONAL: params.on			이벤트
 
-		let value;
+        let value;
 
 		// init params.
 		if (params !== undefined) {
@@ -7054,8 +7054,8 @@ global.TH = CLASS({
 		//OPTIONAL: params.c		자식 노드. 하나의 노드를 지정하거나, 노드들의 배열을 지정할 수 있습니다.
 		//OPTIONAL: params.on		이벤트
 
-		let rowspan;
-		let colspan;
+        let rowspan;
+        let colspan;
 
 		// init params.
 		if (params !== undefined) {
@@ -7141,14 +7141,14 @@ global.VIDEO = CLASS({
 		//OPTIONAL: params.c			자식 노드. 하나의 노드를 지정하거나, 노드들의 배열을 지정할 수 있습니다.
 		//OPTIONAL: params.on			이벤트
 
-		let webm = params.webm;
-		let ogg = params.ogg;
-		let mp4 = params.mp4;
-		let poster = params.poster;
-		let isNoControls = params.isNoControls;
-		let isLoop = params.isLoop;
-		let isMuted = params.isMuted;
-		
+		const webm = params.webm;
+		const ogg = params.ogg;
+		const mp4 = params.mp4;
+		const poster = params.poster;
+		const isNoControls = params.isNoControls;
+		const isLoop = params.isLoop;
+		const isMuted = params.isMuted;
+
 		if (webm !== undefined && self.getEl().canPlayType('video/webm') !== '') {
 			self.getEl().src = webm;
 		} else if (ogg !== undefined && self.getEl().canPlayType('video/ogg') !== '') {
@@ -7156,37 +7156,37 @@ global.VIDEO = CLASS({
 		} else if (mp4 !== undefined) {
 			self.getEl().src = mp4;
 		}
-		
+
 		if (isNoControls !== true) {
 			inner.setAttr({
 				name : 'controls',
 				value : 'controls'
 			});
 		}
-		
+
 		if (isLoop === true) {
 			inner.setAttr({
 				name : 'loop',
 				value : 'loop'
 			});
 		}
-		
+
 		if (isMuted === true) {
 			inner.setAttr({
 				name : 'muted',
 				value : 'muted'
 			});
 		}
-		
-		let play = self.play = () => {
+
+		const play = self.play = () => {
 			self.getEl().play();
 		};
-		
-		let pause = self.pause = () => {
+
+		const pause = self.pause = () => {
 			self.getEl().pause();
 		};
-		
-		let stop = self.stop = () => {
+
+		const stop = self.stop = () => {
 			self.getEl().pause();
 			self.getEl().currentTime = 0;
 		};
@@ -7226,7 +7226,7 @@ global.VIDEO = CLASS({
       , likeAndroid = /like android/i.test(ua)
       , android = !likeAndroid && /android/i.test(ua)
       , nexusMobile = /nexus\s*[0-6]\s*/i.test(ua)
-      , nexusTablet = !nexusMobile && /nexus\s*[0-9]+/i.test(ua)
+      , nexusTabconst = !nexusMobile && /nexus\s*[0-9]+/i.test(ua)
       , chromeos = /CrOS/.test(ua)
       , silk = /silk/i.test(ua)
       , sailfish = /sailfish/i.test(ua)
@@ -7239,8 +7239,8 @@ global.VIDEO = CLASS({
       , linux = !android && !sailfish && !tizen && !webos && /linux/i.test(ua)
       , edgeVersion = getFirstMatch(/edge\/(\d+(\.\d+)?)/i)
       , versionIdentifier = getFirstMatch(/version\/(\d+(\.\d+)?)/i)
-      , tablet = /tablet/i.test(ua)
-      , mobile = !tablet && /[^-]mobi/i.test(ua)
+      , tabconst = /tabconst/i.test(ua)
+      , mobile = !tabconst && /[^-]mobi/i.test(ua)
       , xbox = /xbox/i.test(ua)
       , result
 
@@ -7384,7 +7384,7 @@ global.VIDEO = CLASS({
       , firefox: t
       , version: getFirstMatch(/(?:firefox|iceweasel|fxios)[ \/](\d+(\.\d+)?)/i)
       }
-      if (/\((mobile|tablet);[^\)]*rv:[\d\.]+\)/i.test(ua)) {
+      if (/\((mobile|tabconst);[^\)]*rv:[\d\.]+\)/i.test(ua)) {
         result.firefoxos = t
       }
     }
@@ -7409,7 +7409,7 @@ global.VIDEO = CLASS({
         , version: getFirstMatch(/slimerjs\/(\d+(\.\d+)?)/i)
       }
     }
-    else if (/blackberry|\bbb\d+/i.test(ua) || /rim\stablet/i.test(ua)) {
+    else if (/blackberry|\bbb\d+/i.test(ua) || /rim\stabconst/i.test(ua)) {
       result = {
         name: 'BlackBerry'
       , blackberry: t
@@ -7543,7 +7543,7 @@ global.VIDEO = CLASS({
     } else if (result.webos) {
       osVersion = getFirstMatch(/(?:web|hpw)os\/(\d+(\.\d+)*)/i);
     } else if (result.blackberry) {
-      osVersion = getFirstMatch(/rim\stablet\sos\s(\d+(\.\d+)*)/i);
+      osVersion = getFirstMatch(/rim\stabconst\sos\s(\d+(\.\d+)*)/i);
     } else if (result.bada) {
       osVersion = getFirstMatch(/bada\/(\d+(\.\d+)*)/i);
     } else if (result.tizen) {
@@ -7556,13 +7556,13 @@ global.VIDEO = CLASS({
     // device type extraction
     var osMajorVersion = osVersion.split('.')[0];
     if (
-         tablet
-      || nexusTablet
+         tabconst
+      || nexusTabconst
       || iosdevice == 'ipad'
       || (android && (osMajorVersion == 3 || (osMajorVersion >= 4 && !mobile)))
       || result.silk
     ) {
-      result.tablet = t
+      result.tabconst = t
     } else if (
          mobile
       || iosdevice == 'iphone'
@@ -7877,9 +7877,9 @@ Licensed under the MIT license
 }(window));
 
 /*
- * HTTP DELETE 요청을 보냅니다.
+ * HTTP delete 요청을 보냅니다.
  */
-global.DELETE = METHOD({
+global.delete = METHOD({
 
 	run : (urlOrParams, responseListenerOrListeners) => {
 		//REQUIRED: urlOrParams
@@ -7899,7 +7899,7 @@ global.DELETE = METHOD({
 		REQUEST(COMBINE([CHECK_IS_DATA(urlOrParams) === true ? urlOrParams : {
 			url : urlOrParams
 		}, {
-			method : 'DELETE'
+			method : 'delete'
 		}]), responseListenerOrListeners);
 	}
 });
@@ -7991,7 +7991,7 @@ global.REQUEST = METHOD({
 
 	run : (params, responseListenerOrListeners) => {
 		//REQUIRED: params
-		//REQUIRED: params.method	요청 메소드. GET, POST, PUT, DELETE를 설정할 수 있습니다.
+		//REQUIRED: params.method	요청 메소드. GET, POST, PUT, delete를 설정할 수 있습니다.
 		//OPTIONAL: params.isSecure	HTTPS 프로토콜인지 여부
 		//OPTIONAL: params.host
 		//OPTIONAL: params.port
@@ -8005,69 +8005,69 @@ global.REQUEST = METHOD({
 		//OPTIONAL: responseListenerOrListeners.error
 		//OPTIONAL: responseListenerOrListeners.success
 
-		let method = params.method;
-		let isSecure = params.isSecure === undefined ? BROWSER_CONFIG.isSecure : params.isSecure;
-		let host = params.host === undefined ? BROWSER_CONFIG.host : params.host;
-		let port = params.port === undefined ? (params.host === undefined ? BROWSER_CONFIG.port : 80) : params.port;
-		let uri = params.uri;
-		let url = params.url;
-		let paramStr = params.paramStr;
-		let _params = params.params;
-		let data = params.data;
-		let headers = params.headers;
-		
-		let responseListener;
-		let errorListener;
+        let method = params.method;
+		const isSecure = params.isSecure === undefined ? BROWSER_CONFIG.isSecure : params.isSecure;
+		const host = params.host === undefined ? BROWSER_CONFIG.host : params.host;
+		const port = params.port === undefined ? (params.host === undefined ? BROWSER_CONFIG.port : 80) : params.port;
+        let uri = params.uri;
+        let url = params.url;
+        let paramStr = params.paramStr;
+		const _params = params.params;
+		const data = params.data;
+		const headers = params.headers;
+
+        let responseListener;
+        let errorListener;
 
 		method = method.toUpperCase();
-		
+
 		if (url !== undefined) {
-			
+
 			if (url.indexOf('?') !== -1) {
 				paramStr = url.substring(url.indexOf('?') + 1) + (paramStr === undefined ? '' : '&' + paramStr);
 				url = url.substring(0, url.indexOf('?'));
 			}
-			
+
 		} else {
-			
+
 			if (uri !== undefined && uri.indexOf('?') !== -1) {
 				paramStr = uri.substring(uri.indexOf('?') + 1) + (paramStr === undefined ? '' : '&' + paramStr);
 				uri = uri.substring(0, uri.indexOf('?'));
 			}
 		}
-		
+
 		if (_params !== undefined) {
-			
+
 			EACH(_params, (value, name) => {
-				
+
 				if (paramStr === undefined) {
 					paramStr = '';
 				} else {
 					paramStr += '&';
 				}
-				
+
 				paramStr += encodeURIComponent(name) + '=' + encodeURIComponent(value);
 			});
 		}
-		
+
 		if (data !== undefined) {
 			paramStr = (paramStr === undefined ? '' : paramStr + '&') + '__DATA=' + encodeURIComponent(STRINGIFY(data));
 		}
 
 		paramStr = (paramStr === undefined ? '' : paramStr + '&') + Date.now();
-		
+
 		if (url === undefined) {
 			url = (isSecure === true ? 'https://' : 'http://') + host + ':' + port + '/' + (uri === undefined ? '' : (uri[0] === '/' ? uri.substring(1) : uri));
 		}
-		
+
 		if (CHECK_IS_DATA(responseListenerOrListeners) !== true) {
 			responseListener = responseListenerOrListeners;
 		} else {
 			responseListener = responseListenerOrListeners.success;
 			errorListener = responseListenerOrListeners.error;
 		}
-		
-		(method === 'GET' || method === 'DELETE' ? fetch(url + '?' + paramStr, {
+
+		(method === 'GET' || method === 'delete' ? fetch(url + '?' + paramStr, {
 			method : method,
 			credentials : host === BROWSER_CONFIG.host && port === BROWSER_CONFIG.port ? 'include' : undefined,
 			headers : new Headers(headers === undefined ? {} : headers)
@@ -8081,8 +8081,8 @@ global.REQUEST = METHOD({
 		}).then((responseText) => {
 			responseListener(responseText);
 		}).catch((error) => {
-			
-			let errorMsg = error.toString();
+
+			const errorMsg = error.toString();
 
 			if (errorListener !== undefined) {
 				errorListener(errorMsg);
@@ -8096,46 +8096,46 @@ global.REQUEST = METHOD({
  * URI를 변경하여 다른 뷰로 이동합니다.
  */
 global.GO = METHOD((m) => {
-	
-	let isCTRLKeyDown;
+
+    let isCTRLKeyDown;
 
 	return {
-		
+
 		run : (uri) => {
 			//REQUIRED: uri
-			
+
 			if (isCTRLKeyDown === undefined) {
 				isCTRLKeyDown = false;
-				
+
 				EVENT('keydown', (e) => {
 					if (e.getKey() === 'Control') {
 						isCTRLKeyDown = true;
 					}
 				});
-				
+
 				EVENT('keyup', (e) => {
 					if (e.getKey() === 'Control') {
 						isCTRLKeyDown = false;
 					}
 				});
 			}
-			
+
 			if (isCTRLKeyDown === true) {
-				
+
 				GO_NEW_WIN(uri);
-				
+
 				isCTRLKeyDown = false;
 			}
-			
+
 			else {
-				
+
 				// when protocol is 'file:', use hashbang.
 				if (location.protocol === 'file:') {
 					location.href = HREF(uri);
 				} else {
 					history.pushState(undefined, undefined, HREF(uri));
 				}
-				
+
 				MATCH_VIEW.checkAll();
 			}
 		}
@@ -8211,15 +8211,15 @@ FOR_BOX((box) => {
  * 특정 URI와 뷰를 연결합니다.
  */
 global.MATCH_VIEW = METHOD((m) => {
-	
-	let changeURIHandlers = [];
-	
-	let checkAll = m.checkAll = () => {
+
+	const changeURIHandlers = [];
+
+	const checkAll = m.checkAll = () => {
 		EACH(changeURIHandlers, (changeURIHandler) => {
 			changeURIHandler();
 		});
 	};
-	
+
 	return {
 
 		run : (params) => {
@@ -8228,74 +8228,74 @@ global.MATCH_VIEW = METHOD((m) => {
 			//OPTIONAL: params.excludeURI
 			//REQUIRED: params.target
 
-			let uri = params.uri;
-			let excludeURI = params.excludeURI;
-			let target = params.target;
-			
-			let uriMatcher = URI_MATCHER(uri);
-			let excludeURIMatcher = excludeURI === undefined ? undefined : URI_MATCHER(excludeURI);
-	
-			let view;
-			let preParams;
-			
-			let changeURIHandler = () => {
-	
-				let uri = URI();
-				let result;
-	
+			const uri = params.uri;
+			const excludeURI = params.excludeURI;
+			const target = params.target;
+
+			const uriMatcher = URI_MATCHER(uri);
+			const excludeURIMatcher = excludeURI === undefined ? undefined : URI_MATCHER(excludeURI);
+
+            let view;
+            let preParams;
+
+			const changeURIHandler = () => {
+
+				const uri = URI();
+                let result;
+
 				// when view founded
 				if (
 				uri !== REFRESH.getRefreshingURI() &&
 				(result = uriMatcher.check(uri)).checkIsMatched() === true &&
 				(excludeURI === undefined || excludeURIMatcher.check(uri).checkIsMatched() !== true)) {
 
-					let uriParams = result.getURIParams();
-	
+					const uriParams = result.getURIParams();
+
 					// when before view not exists, create view.
 					if (view === undefined) {
-	
+
 						view = target();
 						view.changeParams(uriParams);
 						target.lastView = view;
-	
+
 						preParams = uriParams;
 					}
-	
+
 					// when before view exists, change params.
 					else if (CHECK_ARE_SAME([preParams, uriParams]) !== true) {
-	
+
 						view.changeParams(uriParams);
 						preParams = uriParams;
 					}
-					
+
 					view.runURIChangeHandlers(uri);
 				}
-	
+
 				// when view not founded, close before view
 				else if (view !== undefined) {
-	
+
 					view.close();
-	
+
 					view = undefined;
 					target.lastView = undefined;
 				}
 			};
-			
+
 			changeURIHandlers.push(changeURIHandler);
-			
+
 			// when protocol is 'file:', use hashbang.
 			if (location.protocol === 'file:') {
 				EVENT('hashchange', () => {
 					changeURIHandler();
 				});
 			}
-			
+
 			else {
 				EVENT('popstate', () => {
 					changeURIHandler();
 				});
 			}
-			
+
 			changeURIHandler();
 		}
 	};
@@ -8311,14 +8311,14 @@ FOR_BOX((box) => {
 			//OPTIONAL: params.excludeURI
 			//REQUIRED: params.target
 
-			let uri = params.uri;
-			let excludeURI = params.excludeURI;
-			let target = params.target;
+			const uri = params.uri;
+			const excludeURI = params.excludeURI;
+			const target = params.target;
 
-			let newURIs = [];
-			let newExcludeURIs = [];
+			const newURIs = [];
+			const newExcludeURIs = [];
 
-			let pushURI = (uri) => {
+			const pushURI = (uri) => {
 
 				if (box.boxName === CONFIG.defaultBoxName) {
 					newURIs.push(uri);
@@ -8327,7 +8327,7 @@ FOR_BOX((box) => {
 				newURIs.push(box.boxName + '/' + uri);
 			};
 
-			let pushExcludeURI = (uri) => {
+			const pushExcludeURI = (uri) => {
 
 				if (box.boxName === CONFIG.defaultBoxName) {
 					newExcludeURIs.push(uri);
@@ -8341,7 +8341,7 @@ FOR_BOX((box) => {
 			} else {
 				pushURI(uri);
 			}
-			
+
 			if (excludeURI !== undefined) {
 				if (CHECK_IS_ARRAY(excludeURI) === true) {
 					EACH(excludeURI, pushExcludeURI);
@@ -8363,39 +8363,39 @@ FOR_BOX((box) => {
  * 뷰를 새로 불러옵니다.
  */
 global.REFRESH = METHOD((m) => {
-	
+
 	const REFRESHING_URI = '__REFRESHING';
-	
-	let getRefreshingURI = m.getRefreshingURI = () => {
+
+	const getRefreshingURI = m.getRefreshingURI = () => {
 		return REFRESHING_URI;
 	};
-	
+
 	return {
 
 		run : (uri) => {
 			//OPTIONAL: uri
-			
+
 			// when protocol is 'file:', use hashbang.
 			if (location.protocol === 'file:') {
-				
-				let savedHash = uri !== undefined ? '#!/' + uri : location.hash;
-		
+
+				const savedHash = uri !== undefined ? '#!/' + uri : location.hash;
+
 				EVENT_ONCE({
 					name : 'hashchange'
 				}, () => {
 					location.replace(savedHash === '' ? '#!/' : savedHash);
 				});
-		
+
 				location.href = '#!/' + getRefreshingURI();
 			}
-			
+
 			else {
-				
-				let savedURI = uri !== undefined ? uri : location.pathname.substring(1);
-		
+
+				const savedURI = uri !== undefined ? uri : location.pathname.substring(1);
+
 				history.pushState(undefined, undefined, '/' + REFRESHING_URI);
 				MATCH_VIEW.checkAll();
-				
+
 				history.replaceState(undefined, undefined, '/' + savedURI);
 				MATCH_VIEW.checkAll();
 			}
@@ -8409,7 +8409,7 @@ FOR_BOX((box) => {
 
 		run : (uri) => {
 			//OPTIONAL: uri
-			
+
 			REFRESH((box.boxName === CONFIG.defaultBoxName ? '' : box.boxName + '/') + (uri === undefined ? '' : uri));
 		}
 	});
@@ -8421,7 +8421,7 @@ FOR_BOX((box) => {
 global.URI = METHOD({
 
 	run : () => {
-		
+
 		// when protocol is 'file:', use hashbang.
 		if (location.protocol === 'file:') {
 			return location.hash.substring(3);
@@ -8438,15 +8438,15 @@ global.VIEW = CLASS({
 
 	init : (inner, self) => {
 
-		let isClosed = false;
-		let paramsChangeHandlers = [];
-		let uriChangeHandlers = [];
-		let closeHandlers = [];
-		
-		let nowParams;
-		let nowURI;
+        let isClosed = false;
+		const paramsChangeHandlers = [];
+		const uriChangeHandlers = [];
+		const closeHandlers = [];
 
-		let on = inner.on = (eventName, eventHandler) => {
+        let nowParams;
+        let nowURI;
+
+		const on = inner.on = (eventName, eventHandler) => {
 			//REQUIRED: eventName
 			//REQUIRED: eventHandler
 
@@ -8457,7 +8457,7 @@ global.VIEW = CLASS({
 					eventHandler(nowParams);
 				}
 			}
-			
+
 			// when change uri
 			if (eventName === 'uriChange') {
 				uriChangeHandlers.push(eventHandler);
@@ -8472,25 +8472,25 @@ global.VIEW = CLASS({
 			}
 		};
 
-		let changeParams = self.changeParams = (params) => {
-			
+		const changeParams = self.changeParams = (params) => {
+
 			nowParams = params;
 
 			EACH(paramsChangeHandlers, (handler) => {
 				handler(params);
 			});
 		};
-		
-		let runURIChangeHandlers = self.runURIChangeHandlers = (uri) => {
-			
+
+		const runURIChangeHandlers = self.runURIChangeHandlers = (uri) => {
+
 			nowURI = uri;
-			
+
 			EACH(uriChangeHandlers, (handler) => {
 				handler(uri);
 			});
 		};
 
-		let close = self.close = () => {
+		const close = self.close = () => {
 
 			EACH(closeHandlers, (handler) => {
 				handler();
@@ -8499,10 +8499,10 @@ global.VIEW = CLASS({
 			isClosed = true;
 		};
 
-		let checkIsClosed = inner.checkIsClosed = () => {
+		const checkIsClosed = inner.checkIsClosed = () => {
 			return isClosed;
 		};
-		
+
 		scrollTo(0, 0);
 	}
 });
@@ -8513,7 +8513,7 @@ global.VIEW = CLASS({
 global.SCROLL_LEFT = METHOD({
 
 	run : () => {
-		
+
 		return global.pageXOffset;
 	}
 });
